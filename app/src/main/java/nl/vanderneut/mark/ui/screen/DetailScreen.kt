@@ -1,29 +1,55 @@
 package nl.vanderneut.mark.ui.screen
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import nl.vanderneut.mark.NewsData
+import nl.vanderneut.mark.R
 
 @Composable
 fun DetailScreen(navController: NavController, newsData: NewsData){
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         Text(text = "Details", fontWeight = FontWeight.SemiBold)
-        Button(onClick = {
-            //navController.navigate("TopNews")
-            //Closes the current screen
-            navController.popBackStack()
-        }) {
-            Text(text = "go to News + ${newsData.author}")
+        Image(painter = painterResource(id = newsData.image), contentDescription = "")
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp), horizontalArrangement = Arrangement.SpaceBetween){
+            InfoWithIcon(Icons.Default.Edit, info = newsData.author)
+            InfoWithIcon(Icons.Default.DateRange, info = newsData.publishedAt)
+
         }
+
+        Text(text = newsData.title, fontWeight = FontWeight.Bold)
+        Text(text = newsData.description, modifier = Modifier.padding(top=16.dp))
+    }
+}
+
+@Composable
+fun InfoWithIcon(icon: ImageVector, info: String)
+{
+    Row{
+        Icon(icon, contentDescription = "Author",
+            modifier = Modifier.padding(end=8.dp),
+        colorResource(id = R.color.purple_500)
+            )
+        Text(text = info)
     }
 }
 
