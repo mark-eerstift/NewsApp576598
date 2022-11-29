@@ -65,4 +65,8 @@ object MockData {
             description = "Principal Patricia Lampron and another employee were assaulted at Henderson Upper Campus during dismissal on Wednesday.",
             publishedAt = "2021-11-04T01:55:00Z"
         ))
+
+    fun getNews(newsId: Int?):NewsData{
+        return topNewsList.first{it.id == newsId}
+    }
 }
