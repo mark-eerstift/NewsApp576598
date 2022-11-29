@@ -16,7 +16,11 @@ import androidx.navigation.compose.rememberNavController
 fun DetailScreen(navController: NavController){
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         Text(text = "Details", fontWeight = FontWeight.SemiBold)
-        Button(onClick = { navController.navigate("TopNews") }) {
+        Button(onClick = {
+            //navController.navigate("TopNews")
+            //Closes the current screen
+            navController.popBackStack()
+        }) {
             Text(text = "go to News")
         }
     }
