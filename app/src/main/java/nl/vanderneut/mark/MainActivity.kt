@@ -10,6 +10,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import nl.vanderneut.mark.ui.NewsApp576598
 import nl.vanderneut.mark.ui.theme.NewsApp576598Theme
 
 class MainActivity : ComponentActivity() {
@@ -21,23 +22,20 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
-                ) {
-                   
+                )
+                {
+                    NewsApp576598()
                 }
             }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     NewsApp576598Theme {
-        Greeting("Android")
+        NewsApp576598()
     }
 }
