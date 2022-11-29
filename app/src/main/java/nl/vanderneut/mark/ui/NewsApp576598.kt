@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import nl.vanderneut.mark.BottomMenuScreen
 import nl.vanderneut.mark.MockData
+import nl.vanderneut.mark.components.BottomMenu
 import nl.vanderneut.mark.ui.screen.Categories
 import nl.vanderneut.mark.ui.screen.DetailScreen
 import nl.vanderneut.mark.ui.screen.Sources
@@ -26,7 +27,9 @@ fun NewsApp576598()
 
 @Composable
 fun MainScreen(navController: NavHostController, scrollState: ScrollState){
-    Scaffold(bottomBar = {},
+    Scaffold(bottomBar = {
+             BottomMenu(navController)
+    },
 
 
         ) {
@@ -40,6 +43,7 @@ fun Navigation(navController: NavHostController, scrollState: ScrollState)
     val navController = rememberNavController()
     val scrollState = rememberScrollState()
     NavHost(navController = navController, startDestination = "TopNews"){
+        bottomNavigation(navController = navController)
         composable("TopNews"){
             TopNews(navController = navController)
         }
