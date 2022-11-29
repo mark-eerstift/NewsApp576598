@@ -1,7 +1,10 @@
 package nl.vanderneut.mark.ui.screen
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -16,46 +19,36 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import nl.vanderneut.mark.MockData
 import nl.vanderneut.mark.NewsData
 
 @Composable
-fun TopNews(navController: NavController){
-    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = "Top News", fontWeight = FontWeight.SemiBold)
-        Button(onClick = { navController.navigate("Detail") }) {
-            Text(text = "go to detailsscreen")
+fun TopNews(navController: NavController) {
+    Column(modifier = Modifier.fillMaxSize(),horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(text = "Top News",fontWeight = FontWeight.SemiBold)
+        //Todo 6: Replace the Button with LazyColumn and pass in the list from mockdata
+        LazyColumn{
+            items(MockData.topNewsList){newsData->
+
+                TopNewsItem(newsData = newsData)
+            }
         }
     }
 }
 
 //Composable for individual news item
 @Composable
-fun TopNewsItem(newsData: NewsData)
-{
-    Box(modifier = Modifier
-        .height(200.dp)
-        .padding(8.dp))
-    {
-        Image(painter = painterResource(id = newsData.image),
-            contentDescription = "image",
-        contentScale = ContentScale.FillBounds)
+fun TopNewsItem(newsData: NewsData) {
+    Box(modifier = Modifier.height(200.dp).padding(8.dp)) {
+        Image(painter = painterResource(id = newsData.image), contentDescription ="",contentScale = ContentScale.FillBounds)
         Column(modifier = Modifier
             .wrapContentHeight()
-            .padding(top = 16.dp, start = 16.dp),
-            verticalArrangement = Arrangement.SpaceBetween
-        
-        ) {
-            Text(text = newsData.publishedAt, 
-               color = Color.White, 
-                fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.height(80.dp))
-            Text(text = newsData.title,
-                color = Color.White,
-                fontWeight = FontWeight.SemiBold
-            )
+            .padding(top = 16.dp, start = 16.dp),verticalArrangement = Arrangement.SpaceBetween) {
+            Text(text = newsData.publishedAt,color = Color.White,fontWeight = FontWeight.SemiBold)
+            Spacer(modifier = Modifier.height(100.dp))
+            Text(text = newsData.title,color = Color.White,fontWeight = FontWeight.SemiBold)
         }
     }
-    
 }
 
 @Preview(showBackground = true)
