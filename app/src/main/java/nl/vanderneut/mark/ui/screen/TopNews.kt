@@ -2,6 +2,7 @@ package nl.vanderneut.mark.ui.screen
 
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -29,8 +30,9 @@ fun TopNews(navController: NavController) {
         //Todo 6: Replace the Button with LazyColumn and pass in the list from mockdata
         LazyColumn{
             items(MockData.topNewsList){newsData->
-
-                TopNewsItem(newsData = newsData)
+                TopNewsItem(newsData = newsData, onNewsClick = {
+                    navController.navigate("Detail/${newsData.id}")
+                })
             }
         }
     }
@@ -38,8 +40,10 @@ fun TopNews(navController: NavController) {
 
 //Composable for individual news item
 @Composable
-fun TopNewsItem(newsData: NewsData) {
-    Box(modifier = Modifier.height(200.dp).padding(8.dp)) {
+fun TopNewsItem(newsData: NewsData, onNewsClick: ()-> Unit = {}) {
+    Box(modifier = Modifier.height(200.dp).padding(8.dp).clickable {
+        onNewsClick()
+    }) {
         Image(painter = painterResource(id = newsData.image), contentDescription ="",contentScale = ContentScale.FillBounds)
         Column(modifier = Modifier
             .wrapContentHeight()
