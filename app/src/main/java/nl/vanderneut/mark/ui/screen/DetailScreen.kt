@@ -24,6 +24,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
+import coil.compose.SubcomposeAsyncImage
+import coil.compose.SubcomposeAsyncImageContent
 import nl.vanderneut.mark.NewsData
 import nl.vanderneut.mark.R
 import nl.vanderneut.mark.models.TopNewsArticle
@@ -45,13 +48,28 @@ fun DetailScreen(article: TopNewsArticle, scrollState: ScrollState,navController
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            AsyncImage(
+            SubcomposeAsyncImage(
                 model = article.urlToImage,
-                placeholder = painterResource(R.drawable.ic_image_1),
+                contentScale = ContentScale.FillBounds,
+
                 contentDescription = "",
-                error = painterResource(R.drawable.errorimg),
-                contentScale = ContentScale.FillBounds
-            )
+
+                ) {
+
+                val state = painter.state
+                if (state is AsyncImagePainter.State.Loading) {
+                    CircularProgressIndicator()
+
+                } else if (state is AsyncImagePainter.State.Error || state is AsyncImagePainter.State.Empty){
+                    Image(painterResource(R.drawable.errorimg),"error loading image")
+
+                }
+                else
+                {
+
+                    SubcomposeAsyncImageContent()
+                }
+            }
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

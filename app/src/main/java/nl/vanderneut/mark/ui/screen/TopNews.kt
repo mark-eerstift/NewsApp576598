@@ -36,6 +36,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
+import coil.compose.SubcomposeAsyncImage
+import coil.compose.SubcomposeAsyncImageContent
 import nl.vanderneut.mark.MockData
 import nl.vanderneut.mark.NewsData
 import nl.vanderneut.mark.models.TopNewsArticle
@@ -63,17 +66,35 @@ fun TopNews(navController: NavController,articles:List<TopNewsArticle>) {
 
 
 @Composable
-fun TopNewsItem(article: TopNewsArticle, modifier:Modifier = Modifier.padding(8.dp), onNewsClick: () -> Unit = {},){
+fun TopNewsItem(article: TopNewsArticle, modifier:Modifier = Modifier
+    .padding(8.dp)
+    .clickable {
+        onNewsClick()
+    }, onNewsClick: () -> Unit = {},){
     Card(modifier,border = BorderStroke(2.dp,color = colorResource(id = R.color.purple_500))) {
         Row(modifier.fillMaxWidth()) {
-            AsyncImage(
-                modifier = Modifier.size(100.dp),
+            SubcomposeAsyncImage(
                 model = article.urlToImage,
-                placeholder = painterResource(R.drawable.ic_image_1),
+                modifier = Modifier.size(100.dp),
+
                 contentDescription = "",
-                error = painterResource(R.drawable.errorimg),
-                contentScale = ContentScale.Fit
-            )
+
+            ) {
+
+                val state = painter.state
+                if (state is AsyncImagePainter.State.Loading) {
+                    CircularProgressIndicator()
+
+                } else if (state is AsyncImagePainter.State.Error || state is AsyncImagePainter.State.Empty){
+                    Image(painterResource(R.drawable.errorimg),"error loading image")
+
+                }
+                else
+                {
+
+                    SubcomposeAsyncImageContent()
+                }
+            }
             Column(modifier ) {
                 Text(text = article.title ?: "Not Available", fontWeight = FontWeight.Bold)
                 Row {
