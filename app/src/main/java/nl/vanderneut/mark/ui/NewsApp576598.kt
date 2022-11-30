@@ -5,6 +5,7 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -62,6 +63,10 @@ fun Navigation(navController:NavHostController,scrollState: ScrollState,newsMana
             }
         }
     }
+        ?: run {
+            //If articles IS null
+            CircularProgressIndicator()
+        }
 }
 
 //Todo 6: create TopNews list and provide the value to TopNews composable
