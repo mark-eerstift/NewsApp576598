@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -22,76 +23,85 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import nl.vanderneut.mark.NewsData
 import nl.vanderneut.mark.R
+import nl.vanderneut.mark.models.TopNewsArticle
 
+/**Todo 13: replace newsData with topNewsArticle and also replace the element values with data from it
+ * Replace Image with CoilImage
+ * For each Text we use elvis operator ?: to set the the value if its not null else set Not Available
+ */
 @Composable
-fun DetailScreen(newsData: NewsData, scrollState: ScrollState, navController: NavController){
-
+fun DetailScreen(article: TopNewsArticle, scrollState: ScrollState,navController: NavController) {
     Scaffold(topBar = {
         DetailTopAppBar(onBackPressed = {navController.popBackStack()})
     }) {
-
-
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .padding(16.dp)
                 .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "Details", fontWeight = FontWeight.SemiBold)
-            Image(painter = painterResource(id = newsData.image), contentDescription = "")
+
+            AsyncImage(
+                model = article.urlToImage,
+                placeholder = painterResource(R.drawable.ic_image_1),
+                contentDescription = "",
+                error = painterResource(R.drawable.errorimg),
+                contentScale = ContentScale.FillBounds
+            )
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp), horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                InfoWithIcon(Icons.Default.Edit, info = newsData.author)
-                InfoWithIcon(Icons.Default.DateRange, info = newsData.publishedAt)
-
+                InfoWithIcon(Icons.Default.Edit, info = article.author?:"Not Available")
+                InfoWithIcon(icon = Icons.Default.DateRange, info = article.author?:"not avail")
             }
-
-            Text(text = newsData.title, fontWeight = FontWeight.Bold)
-            Text(text = newsData.description, modifier = Modifier.padding(top = 16.dp))
+            Text(text = article.title?:"Not Available", fontWeight = FontWeight.Bold)
+            Text(text = article.description?:"Not Available", modifier = Modifier.padding(top = 16.dp))
         }
     }
 }
 
 @Composable
-fun DetailTopAppBar(onBackPressed: ()-> Unit = {})
-{
-    TopAppBar(title = { Text(text = "Details", fontWeight = FontWeight.SemiBold)},
-    navigationIcon = {
-        IconButton(onClick = { onBackPressed() }) {
-            Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "")
-        }
-    }
-    )
+fun DetailTopAppBar(onBackPressed: () -> Unit = {}) {
+    TopAppBar(title = { Text(text = "Detail Screen", fontWeight = FontWeight.SemiBold) },
+        navigationIcon = {
+            IconButton(onClick = { onBackPressed() }) {
+                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Arrow Back")
+            }
+        })
 }
 
 @Composable
-fun InfoWithIcon(icon: ImageVector, info: String)
-{
-    Row{
-        Icon(icon, contentDescription = "Author",
-            modifier = Modifier.padding(end=8.dp),
-        colorResource(id = R.color.purple_500)
+fun InfoWithIcon(icon: ImageVector, info: String) {
+    Row {
+        Icon(
+            icon,
+            contentDescription = "Author",
+            modifier = Modifier.padding(end = 8.dp),
+            colorResource(
+                id = R.color.purple_500
             )
+        )
         Text(text = info)
     }
 }
 
-@Preview()
+//Todo 14: replace the preview data with TopNewsArticle
+@Preview(showBackground = true)
 @Composable
-fun DetailsScreenPreview()
-{
-    DetailScreen(NewsData(
-        1,
-        author = "Raja Razek, CNN",
-        title = "'Tiger King' Joe Exotic says he has been diagnosed with aggressive form of prostate cancer - CNN",
-        description = "Joseph Maldonado, known as Joe Exotic on the 2020 Netflix docuseries \\\"Tiger King: Murder, Mayhem and Madness,\\\" has been diagnosed with an aggressive form of prostate cancer, according to a letter written by Maldonado.",
-        publishedAt = "2021-11-04T05:35:21Z"
-    ), rememberScrollState(), rememberNavController()
+fun DetailScreenPreview() {
+    DetailScreen(
+        TopNewsArticle(
+            author = "Namita Singh",
+            title = "Cleo Smith news — live: Kidnap suspect 'in hospital again' as 'hard police grind' credited for breakthrough - The Independent",
+            description = "The suspected kidnapper of four-year-old Cleo Smith has been treated in hospital for a second time amid reports he was “attacked” while in custody.",
+            publishedAt = "2021-11-04T04:42:40Z"
+        ), rememberScrollState(),
+        rememberNavController()
     )
 }
