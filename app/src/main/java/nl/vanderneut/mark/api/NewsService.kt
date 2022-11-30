@@ -1,4 +1,4 @@
-package nl.vanderneut.mark.API
+package nl.vanderneut.mark.api
 
 import nl.vanderneut.mark.models.TopNewsResponse
 import retrofit2.Call

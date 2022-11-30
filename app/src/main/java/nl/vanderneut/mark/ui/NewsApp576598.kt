@@ -1,5 +1,6 @@
 package nl.vanderneut.mark.ui
 
+import android.util.Log
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Scaffold
@@ -10,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import nl.vanderneut.mark.BottomMenuScreen
 import nl.vanderneut.mark.MockData
+import nl.vanderneut.mark.api.NewsManager
 import nl.vanderneut.mark.components.BottomMenu
 import nl.vanderneut.mark.ui.screen.Categories
 import nl.vanderneut.mark.ui.screen.DetailScreen
@@ -35,7 +37,9 @@ fun MainScreen(navController: NavHostController,scrollState: ScrollState) {
 
 
 @Composable
-fun Navigation(navController:NavHostController,scrollState: ScrollState) {
+fun Navigation(navController:NavHostController,scrollState: ScrollState, newsManager: NewsManager = NewsManager()) {
+    val articles = newsManager.newsResponse.value.articles
+    Log.d("news", "$articles")
     NavHost(navController = navController, startDestination =BottomMenuScreen.TopNews.route) {
         bottomNavigation(navController = navController)
         composable("Detail/{newsId}",
