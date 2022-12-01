@@ -1,6 +1,7 @@
 package nl.vanderneut.mark.ui
 
 import android.app.Application
+import androidx.compose.runtime.*
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -9,10 +10,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import nl.vanderneut.mark.MainApp
 import nl.vanderneut.mark.models.TopNewsResponse
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
@@ -28,6 +25,15 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
+    private val _favoriteArticles = mutableStateListOf<String>()
+    val favoriteArticles: List<String> = _favoriteArticles
+    fun addFav(url: String) {
+        _favoriteArticles.add(url)
+    }
+
+    fun remove(url: String) {
+        _favoriteArticles.remove(url)
+    }
 
     private val _isError = MutableStateFlow(false)
     val isError: StateFlow<Boolean>

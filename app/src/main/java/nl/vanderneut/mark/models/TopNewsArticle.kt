@@ -1,6 +1,7 @@
 package nl.vanderneut.mark.models
 
 data class TopNewsArticle(
+    val id : Int? = null,
     val source : Source? = null,
     val author : String? = null,
     val title : String? = null,

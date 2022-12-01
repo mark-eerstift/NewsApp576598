@@ -1,6 +1,20 @@
 buildscript {
     ext {
         compose_ui_version = '1.1.1'
+        hilt_version = '2.39'
+    }
+    repositories {
+        // Check that you have the following line (if not, add it):
+        google()  // Google's Maven repository
+        mavenCentral()
+    }
+
+    dependencies {
+        // ...
+
+        // Add the following line:
+        classpath 'com.google.gms:google-services:4.3.0'  // Google Services plugin
+        classpath 'com.google.dagger:hilt-android-gradle-plugin:2.39'
     }
 }// Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {

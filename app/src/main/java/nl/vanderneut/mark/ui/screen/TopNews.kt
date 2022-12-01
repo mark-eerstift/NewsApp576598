@@ -39,10 +39,12 @@ import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
+import com.google.firebase.auth.FirebaseAuth
 import nl.vanderneut.mark.MockData
 import nl.vanderneut.mark.NewsData
 import nl.vanderneut.mark.models.TopNewsArticle
 import nl.vanderneut.mark.R
+import nl.vanderneut.mark.Screens
 import nl.vanderneut.mark.components.ErrorUI
 import nl.vanderneut.mark.components.LoadingUI
 import nl.vanderneut.mark.ui.MainViewModel
@@ -52,6 +54,15 @@ fun TopNews(navController: NavController, articles:List<TopNewsArticle>,
             viewModel: MainViewModel, isError: MutableState<Boolean>, isLoading: MutableState<Boolean>
 ) {
     Column(modifier = Modifier.fillMaxSize(),horizontalAlignment = Alignment.CenterHorizontally) {
+        
+        Text("signed in user: " + FirebaseAuth.getInstance().currentUser?.email)
+        Button(onClick = {
+            FirebaseAuth.getInstance().signOut().run{
+                navController.navigate(Screens.SplashScreen.name)
+            }
+        }) {
+            Text("sign out")
+        }
         //Todo 17: pass in viewmodel as SearchBar argument
         val resultList = mutableListOf<TopNewsArticle>()
             resultList.addAll(articles)
