@@ -11,16 +11,30 @@ import kotlinx.coroutines.launch
 import nl.vanderneut.mark.MainApp
 import nl.vanderneut.mark.models.TopNewsResponse
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import nl.vanderneut.mark.models.ArticlesPager
+import nl.vanderneut.mark.models.TopNewsArticle
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository = getApplication<MainApp>().repository
 
-    private val _newsResponse = MutableStateFlow(TopNewsResponse())
-    val newsResponse: StateFlow<TopNewsResponse>
+    private val _newsResponse: Flow<PagingData<TopNewsArticle>> = Pager(
+        pagingSourceFactory = { ArticlesPager(repository) },
+        config = PagingConfig(pageSize = 20)
+    ).flow.cachedIn(viewModelScope)
+    val newsResponse: Flow<PagingData<TopNewsArticle>>
         get() = _newsResponse
+
+//    private val _newsResponse: Flow<PagingData<TopNewsResponse>>
+//    val newsResponse: StateFlow<TopNewsResponse>
+//        get() = _newsResponse
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
@@ -46,13 +60,13 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun getTopArticles(){
-        _isLoading.value  = true
-        viewModelScope.launch(Dispatchers.IO + errorHandler) {
-            _newsResponse.value = repository.getArticles()
-            _isLoading.value = false
-        }
-
-    }
+//    fun getTopArticles(){
+//        _isLoading.value  = true
+//        viewModelScope.launch(Dispatchers.IO + errorHandler) {
+//            _newsResponse.value = repository.getArticles(0, 20).articles
+//            _isLoading.value = false
+//        }
+//
+//    }
 
 }

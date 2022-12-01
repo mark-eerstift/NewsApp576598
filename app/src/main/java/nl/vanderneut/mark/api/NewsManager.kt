@@ -14,8 +14,9 @@ import retrofit2.Response
 
 class NewsManager(private val service: NewsService) {
 
-    suspend fun getArticles(country:String):TopNewsResponse = withContext(Dispatchers.IO){
-        service.getTopArticles(country)
+    suspend fun getArticles(country:String, from: Int):TopNewsResponse = withContext(Dispatchers.IO){
+        service.getTopArticles(country, from)
+
     }
 
 

@@ -13,6 +13,8 @@ import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import nl.vanderneut.mark.BottomMenuScreen
 import nl.vanderneut.mark.Screens
 import nl.vanderneut.mark.components.BottomMenu
@@ -45,13 +47,13 @@ fun Navigation(navController:NavHostController, scrollState: ScrollState, paddin
     Log.d("576598 says:", "Navigation function now")
     val loading by viewModel.isLoading.collectAsState()
     val error by viewModel.isError.collectAsState()
-    val articles = mutableListOf(TopNewsArticle())
-    val topArticles = viewModel.newsResponse.collectAsState().value.articles
-
-    Log.d("Toparticles:", topArticles.toString())
+    //val articles = mutableListOf(TopNewsArticle())
+    //val topArticles = viewModel.newsResponse.collectAsState().value.articles
+    val articles = viewModel.newsResponse.collectAsLazyPagingItems()
+    //Log.d("Toparticles:", topArticles.toString())
     Log.d("articles:", articles.toString())
 
-    articles.addAll(topArticles ?: listOf())
+    //articles.addAll(topArticles ?: listOf())
     NavHost(navController = navController, startDestination =Screens.SplashScreen.name,modifier = Modifier.padding(paddingValues)) {
         Log.d("navhost says:", "inside navhost now")
         val isLoading = mutableStateOf(loading)
@@ -73,28 +75,34 @@ fun Navigation(navController:NavHostController, scrollState: ScrollState, paddin
             val index = navBackStackEntry.arguments?.getInt("index")
             index?.let {
 
-                    articles.clear()
-                    articles.addAll(topArticles?: listOf())
+                   // articles.clear()
+                   // articles.addAll(topArticles?: listOf())
 
                 val article = articles[index]
-                DetailScreen(article, scrollState, navController, viewModel)
+                if (article != null) {
+                    DetailScreen(article, scrollState, navController, viewModel)
+                }
             }
         }
         composable(Screens.TopNews.name) {
-            TopNews(navController = navController,articles,viewModel = viewModel, isLoading = isLoading, isError = isError)
+            TopNews(
+                navController = navController,articles,
+                viewModel = viewModel, isLoading = isLoading, isError = isError)
         }
 
     }
 }
 
 //Todo 19:create a query variable
-fun NavGraphBuilder.bottomNavigation(navController: NavController, articles:List<TopNewsArticle>,
+fun NavGraphBuilder.bottomNavigation(navController: NavController, articles: LazyPagingItems<TopNewsArticle>,
                                      viewModel: MainViewModel, isLoading: MutableState<Boolean>, isError: MutableState<Boolean>
 ) {
     composable(BottomMenuScreen.TopNews.route) {
         Log.d("navhost says:", "navgraph making")
         //Todo 20: replace newsManager with viewModel and pass in a query parameter
-        TopNews(navController = navController,articles,viewModel = viewModel, isLoading = isLoading, isError = isError)
+        TopNews(
+            navController = navController,articles,
+            viewModel = viewModel, isLoading = isLoading, isError = isError)
         Log.d("navhost says:", "navgraph done")
     }
 

@@ -8,12 +8,12 @@ plugins {
 
 android {
     namespace 'nl.vanderneut.mark'
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "nl.vanderneut.mark"
         minSdk 21
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -62,6 +62,7 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.5.2"
     implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03"
+    implementation 'androidx.paging:paging-common-ktx:3.1.1'
 // Dagger - Hilt
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
     implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03"
@@ -86,6 +87,7 @@ dependencies {
     implementation 'androidx.compose.material:material:1.1.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     testImplementation 'junit:junit:4.13.2'
+    implementation "androidx.paging:paging-compose:1.0.0-alpha17"
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_ui_version"

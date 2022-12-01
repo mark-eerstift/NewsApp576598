@@ -1,9 +1,7 @@
 package nl.vanderneut.mark.ui.screen
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
@@ -12,36 +10,20 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
-import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.*
 import androidx.compose.runtime.MutableState
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import coil.compose.AsyncImage
+import androidx.paging.compose.LazyPagingItems
 import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import com.google.firebase.auth.FirebaseAuth
-import nl.vanderneut.mark.MockData
-import nl.vanderneut.mark.NewsData
 import nl.vanderneut.mark.models.TopNewsArticle
 import nl.vanderneut.mark.R
 import nl.vanderneut.mark.Screens
@@ -50,8 +32,9 @@ import nl.vanderneut.mark.components.LoadingUI
 import nl.vanderneut.mark.ui.MainViewModel
 
 @Composable
-fun TopNews(navController: NavController, articles:List<TopNewsArticle>,
-            viewModel: MainViewModel, isError: MutableState<Boolean>, isLoading: MutableState<Boolean>
+fun TopNews(
+    navController: NavController, articles: LazyPagingItems<TopNewsArticle>,
+    viewModel: MainViewModel, isError: MutableState<Boolean>, isLoading: MutableState<Boolean>
 ) {
     Column(modifier = Modifier.fillMaxSize(),horizontalAlignment = Alignment.CenterHorizontally) {
         
@@ -63,9 +46,7 @@ fun TopNews(navController: NavController, articles:List<TopNewsArticle>,
         }) {
             Text("sign out")
         }
-        //Todo 17: pass in viewmodel as SearchBar argument
-        val resultList = mutableListOf<TopNewsArticle>()
-            resultList.addAll(articles)
+
 
         when{
             isLoading.value ->{
@@ -75,18 +56,22 @@ fun TopNews(navController: NavController, articles:List<TopNewsArticle>,
                 ErrorUI()
             }else ->{
             LazyColumn {
-                items(resultList.size) { index ->
-                    TopNewsItem(article = resultList[index],
-                        onNewsClick = { navController.navigate("Detail/$index") }
-                    )
+                items(articles.itemCount) { index ->
+                    articles[index]?.let { TopNewsItem(it, onNewsClick = { navController.navigate("Detail/$index") }) }
+                }
                 }
             }
+
+//            TopNewsItem(article = resultList[index],
+//                onNewsClick = { navController.navigate("Detail/$index") }
+
+
             }
         }
 
 
     }
-}
+
 
 @Composable
 fun TopNewsItem(article: TopNewsArticle, modifier:Modifier = Modifier

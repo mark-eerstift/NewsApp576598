@@ -8,7 +8,7 @@ import retrofit2.http.Query
 interface NewsService {
 
     @GET("top-headlines")
-    suspend fun getTopArticles(@Query("country") country:String): TopNewsResponse
+    suspend fun getTopArticles(@Query("country") country:String, @Query("page") page:Int): TopNewsResponse
 
 
 }
