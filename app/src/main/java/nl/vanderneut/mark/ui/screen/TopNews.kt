@@ -6,8 +6,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.Text
@@ -19,18 +17,20 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.*
+import androidx.compose.runtime.MutableState
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -43,27 +43,31 @@ import nl.vanderneut.mark.MockData
 import nl.vanderneut.mark.NewsData
 import nl.vanderneut.mark.models.TopNewsArticle
 import nl.vanderneut.mark.R
+import nl.vanderneut.mark.ui.MainViewModel
 
-//Todo 4: create TopNewsArticle list variable and replace the list in items with the size instead
 @Composable
-fun TopNews(navController: NavController,articles:List<TopNewsArticle>) {
+fun TopNews(navController: NavController, articles:List<TopNewsArticle>,
+            viewModel: MainViewModel
+) {
     Column(modifier = Modifier.fillMaxSize(),horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = "Top News",fontWeight = FontWeight.SemiBold)
-        LazyColumn{
-            items(articles.size){index->
-                //Todo 5: update newsData with article from each index
-                TopNewsItem(article =articles[index],
+        //Todo 17: pass in viewmodel as SearchBar argument
 
-                    onNewsClick = {   navController.navigate("Detail/$index")
-                    Log.v("hello", "Onclick called")
-                    }
+
+        val resultList = mutableListOf<TopNewsArticle>()
+
+
+
+            resultList.addAll(articles)
+
+        LazyColumn {
+            items(resultList.size) { index ->
+                TopNewsItem(article = resultList[index],
+                    onNewsClick = { navController.navigate("Detail/$index") }
                 )
             }
         }
     }
 }
-
-
 
 @Composable
 fun TopNewsItem(article: TopNewsArticle, modifier:Modifier = Modifier
@@ -79,7 +83,7 @@ fun TopNewsItem(article: TopNewsArticle, modifier:Modifier = Modifier
 
                 contentDescription = "",
 
-            ) {
+                ) {
 
                 val state = painter.state
                 if (state is AsyncImagePainter.State.Loading) {
@@ -106,7 +110,6 @@ fun TopNewsItem(article: TopNewsArticle, modifier:Modifier = Modifier
     }
 }
 
-//Todo 3:Update preview to use TopNewsItem and remove id
 @Preview(showBackground = true)
 @Composable
 fun TopNewsPreview() {
