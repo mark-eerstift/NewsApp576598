@@ -14,6 +14,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
@@ -24,15 +25,28 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val newsResponse: StateFlow<TopNewsResponse>
         get() = _newsResponse
 
-    private val _isLoading = MutableStateFlow(true)
+    private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
+
+
+    private val _isError = MutableStateFlow(false)
+    val isError: StateFlow<Boolean>
+        get() = _isError
+
+    val errorHandler = CoroutineExceptionHandler{
+        _, error ->
+        if(error is Exception){
+            _isError.value = true
+        }
+    }
 
     fun getTopArticles(){
         _isLoading.value  = true
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO + errorHandler) {
             _newsResponse.value = repository.getArticles()
+            _isLoading.value = false
         }
-        _isLoading.value = false
+
     }
 
 }

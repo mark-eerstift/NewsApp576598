@@ -43,29 +43,37 @@ import nl.vanderneut.mark.MockData
 import nl.vanderneut.mark.NewsData
 import nl.vanderneut.mark.models.TopNewsArticle
 import nl.vanderneut.mark.R
+import nl.vanderneut.mark.components.ErrorUI
+import nl.vanderneut.mark.components.LoadingUI
 import nl.vanderneut.mark.ui.MainViewModel
 
 @Composable
 fun TopNews(navController: NavController, articles:List<TopNewsArticle>,
-            viewModel: MainViewModel
+            viewModel: MainViewModel, isError: MutableState<Boolean>, isLoading: MutableState<Boolean>
 ) {
     Column(modifier = Modifier.fillMaxSize(),horizontalAlignment = Alignment.CenterHorizontally) {
         //Todo 17: pass in viewmodel as SearchBar argument
-
-
         val resultList = mutableListOf<TopNewsArticle>()
-
-
-
             resultList.addAll(articles)
 
-        LazyColumn {
-            items(resultList.size) { index ->
-                TopNewsItem(article = resultList[index],
-                    onNewsClick = { navController.navigate("Detail/$index") }
-                )
+        when{
+            isLoading.value ->{
+                LoadingUI()
+            }
+            isError.value ->{
+                ErrorUI()
+            }else ->{
+            LazyColumn {
+                items(resultList.size) { index ->
+                    TopNewsItem(article = resultList[index],
+                        onNewsClick = { navController.navigate("Detail/$index") }
+                    )
+                }
+            }
             }
         }
+
+
     }
 }
 

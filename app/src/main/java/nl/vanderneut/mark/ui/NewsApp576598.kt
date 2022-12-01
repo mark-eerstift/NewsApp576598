@@ -7,10 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Scaffold
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.*
 import androidx.navigation.compose.NavHost
@@ -47,12 +44,15 @@ fun MainScreen(navController: NavHostController,scrollState: ScrollState,mainVie
 
 @Composable
 fun Navigation(navController:NavHostController, scrollState: ScrollState, paddingValues: PaddingValues, viewModel: MainViewModel) {
+    val loading by viewModel.isLoading.collectAsState()
+    val error by viewModel.isError.collectAsState()
     val articles = mutableListOf(TopNewsArticle())
     val topArticles = viewModel.newsResponse.collectAsState().value.articles
     articles.addAll(topArticles ?: listOf())
     NavHost(navController = navController, startDestination =BottomMenuScreen.TopNews.route,modifier = Modifier.padding(paddingValues)) {
-
-        bottomNavigation(navController = navController, articles,viewModel = viewModel)
+        val isLoading = mutableStateOf(loading)
+        val isError = mutableStateOf(error)
+        bottomNavigation(navController = navController, articles,viewModel = viewModel, isLoading = isLoading, isError = isError)
         composable("Detail/{index}",
             arguments = listOf(
                 navArgument("index") { type = NavType.IntType }
@@ -72,12 +72,12 @@ fun Navigation(navController:NavHostController, scrollState: ScrollState, paddin
 
 //Todo 19:create a query variable
 fun NavGraphBuilder.bottomNavigation(navController: NavController, articles:List<TopNewsArticle>,
-                                     viewModel: MainViewModel
+                                     viewModel: MainViewModel, isLoading: MutableState<Boolean>, isError: MutableState<Boolean>
 ) {
     composable(BottomMenuScreen.TopNews.route) {
 
         //Todo 20: replace newsManager with viewModel and pass in a query parameter
-        TopNews(navController = navController,articles,viewModel = viewModel)
+        TopNews(navController = navController,articles,viewModel = viewModel, isLoading = isLoading, isError = isError)
     }
 
 
