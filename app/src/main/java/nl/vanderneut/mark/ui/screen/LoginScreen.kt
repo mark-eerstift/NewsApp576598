@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -25,7 +24,6 @@ import androidx.navigation.NavController
 import nl.vanderneut.mark.Screens
 import nl.vanderneut.mark.components.EmailInput
 import nl.vanderneut.mark.components.ErrorUI
-import nl.vanderneut.mark.components.LoadingUI
 import nl.vanderneut.mark.components.PasswordInput
 
 
@@ -38,11 +36,11 @@ fun LoginScreen(
     val showLoginForm = rememberSaveable { mutableStateOf(true) }
     val isError by viewModel.isError.collectAsState()
 
-    Log.d("LOGIN says:", "whaddup")
+
     Surface(modifier = Modifier.fillMaxSize()) {
       Column(horizontalAlignment = Alignment.CenterHorizontally,
           verticalArrangement = Arrangement.Top) {
-          Log.d("LOGIN says:", "entering if")
+
 
           when{
               isError ->{

@@ -25,22 +25,22 @@ class ArticlesPager(
         _isLoading.value  = true
         val result = fetch(params.key?:-1, params.loadSize).getOrElse{
 
-            Log.d("pager", "errorinFetch,  "+ it.toString())
+
             val isError: StateFlow<Boolean> = _isError
             return LoadResult.Error(it)
 
         }
 
-        Log.d("pager", "key,  "+ params.key + " loadsize: " + params.loadSize)
+
         _isLoading.value = false
         return LoadResult.Page(result, null, (params.key ?:0) +1)
     }
 
     private suspend fun fetch(startKey: Int, loadSize: Int): Result<List<TopNewsArticle>>{
 
-        Log.d("pager", "key,  "+ startKey + " loadsize: " + loadSize.coerceIn(1,10))
+
         val response = repository.getArticles(startKey)
-        Log.d("pager", "response equals" + response.toString())
+
         return when {
             response.isSuccessful -> {
 

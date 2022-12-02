@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import nl.vanderneut.mark.models.user
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -14,7 +13,7 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import nl.vanderneut.mark.components.ErrorUI
+import nl.vanderneut.mark.models.user
 
 class LoginScreenViewModel: ViewModel() {
    // val loadingState = MutableStateFlow(LoadingState.IDLE)
@@ -39,12 +38,10 @@ class LoginScreenViewModel: ViewModel() {
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful){
-                        Log.d("FB", "signInWithEmailAndPassword: Yayayay! ${task.result.toString()}")
-                        //Todo: take them home
                         home()
                     }else {
                         _isError.value = true
-                        Log.d("FB", "signInWithEmailAndPassword: ${task.result.toString()}")
+
                     }
 
 
@@ -52,7 +49,7 @@ class LoginScreenViewModel: ViewModel() {
 
         }catch (ex: Exception){
             _isError.value = true
-            Log.d("FB", "signInWithEmailAndPassword: ${ex.message}")
+
         }
 
 
@@ -75,7 +72,7 @@ class LoginScreenViewModel: ViewModel() {
                          home()
                      }else {
                         _isError.value = true
-                         Log.d("FB", "createUserWithEmailAndPassword: ${task.result.toString()}")
+
 
                      }
                     _loading.value = false

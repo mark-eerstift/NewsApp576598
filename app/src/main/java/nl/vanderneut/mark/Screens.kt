@@ -1,7 +1,5 @@
 package nl.vanderneut.mark
 
-import java.lang.IllegalArgumentException
-
 enum class Screens {
      SplashScreen,
     LoginScreen,

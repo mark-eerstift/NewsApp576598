@@ -44,30 +44,25 @@ fun MainScreen(navController: NavHostController,scrollState: ScrollState,mainVie
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun Navigation(navController:NavHostController, scrollState: ScrollState, paddingValues: PaddingValues, viewModel: MainViewModel) {
-    Log.d("576598 says:", "Navigation function now")
     val loading by viewModel.isLoading.collectAsState()
     val error by viewModel.isError.collectAsState()
-    //val articles = mutableListOf(TopNewsArticle())
-    //val topArticles = viewModel.newsResponse.collectAsState().value.articles
     val articles = viewModel.newsResponse.collectAsLazyPagingItems()
-    //Log.d("Toparticles:", topArticles.toString())
-    Log.d("articles:", articles.itemCount.toString())
+
 
     //articles.addAll(topArticles ?: listOf())
     NavHost(navController = navController, startDestination =Screens.SplashScreen.name,modifier = Modifier.padding(paddingValues)) {
-        Log.d("navhost says:", "inside navhost now")
         val isLoading = mutableStateOf(loading)
         val isError = mutableStateOf(error)
         composable(Screens.SplashScreen.name) {
             SplashScreen(navController = navController)
         }
-        Log.d("navhost says:", "done with composable one")
+
         composable(Screens.LoginScreen.name) {
             LoginScreen(navController = navController)
         }
-        Log.d("navhost says:", "done with composable two")
+
         bottomNavigation(navController = navController, articles,viewModel = viewModel, isLoading = isLoading, isError = isError)
-        Log.d("navhost says:", "done with bottom nav")
+
         composable("Detail/{index}",
             arguments = listOf(
                 navArgument("index") { type = NavType.IntType }
@@ -119,8 +114,4 @@ fun NavGraphBuilder.bottomNavigation(navController: NavController, articles: Laz
     }
 
 
-//    composable(BottomMenuScreen.Sources.route) {
-//        //Todo 13: pass in viewmodel as argument
-//        //Sources(viewModel = viewModel)
-//    }
 }

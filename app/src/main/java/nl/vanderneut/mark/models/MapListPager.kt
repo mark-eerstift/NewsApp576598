@@ -1,7 +1,5 @@
 package nl.vanderneut.mark.models
 
-import android.util.Log
-
 class MapListPager {
     fun mapListPager(entity: TopNewsResponse): Result<TopNewsResponse> = runCatching {
         with(entity) {

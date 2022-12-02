@@ -19,7 +19,6 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.NavGraph
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.delay
 import nl.vanderneut.mark.Screens
@@ -46,8 +45,6 @@ fun SplashScreen(navController: NavController) {
 
         }else {
 
-            Log.d("splash", "hitting else")
-            Log.d("curruser", FirebaseAuth.getInstance().currentUser?.email.toString())
             //HERE IS THE ISSUE, this needs to point to the homepage.
             navController.navigate(Screens.TopNews.name)
 
