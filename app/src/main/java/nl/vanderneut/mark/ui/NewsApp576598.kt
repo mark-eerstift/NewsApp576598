@@ -98,7 +98,7 @@ fun Navigation(navController:NavHostController, scrollState: ScrollState, paddin
 fun NavGraphBuilder.bottomNavigation(navController: NavController, articles: LazyPagingItems<TopNewsArticle>,
                                      viewModel: MainViewModel, isLoading: MutableState<Boolean>, isError: MutableState<Boolean>
 ) {
-    composable(BottomMenuScreen.TopNews.route) {
+    composable(Screens.TopNews.name) {
 
         TopNews(
             navController = navController,articles,
@@ -106,7 +106,7 @@ fun NavGraphBuilder.bottomNavigation(navController: NavController, articles: Laz
 
     }
 
-    composable(BottomMenuScreen.Favorites.route) {
+    composable(Screens.FavoritesScreen.name) {
         FavoritesScreen(
             navController = navController,
             viewModel = viewModel, isLoading = isLoading, isError = isError)
