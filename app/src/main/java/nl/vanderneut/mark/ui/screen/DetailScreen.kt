@@ -1,20 +1,23 @@
 package nl.vanderneut.mark.ui.screen
 
 import android.util.Log
+import androidx.compose.animation.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -34,53 +37,86 @@ import nl.vanderneut.mark.ui.MainViewModel
  */
 @Composable
 fun DetailScreen(article: TopNewsArticle, scrollState: ScrollState,navController: NavController, mainViewModel: MainViewModel) {
-    Scaffold(topBar = {
-        DetailTopAppBar(onBackPressed = {navController.popBackStack()})
-    }) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-                .verticalScroll(scrollState),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            FavoriteButton(article, mainViewModel)
-            SubcomposeAsyncImage(
-                model = article.urlToImage,
-                contentScale = ContentScale.FillBounds,
+    val uriHandler = LocalUriHandler.current
+    var visible by remember { mutableStateOf(false) }
 
-                contentDescription = "",
+        Scaffold(topBar = {
+            DetailTopAppBar(onBackPressed = { navController.popBackStack() })
+        }) {
 
-                ) {
-
-                val state = painter.state
-                if (state is AsyncImagePainter.State.Loading) {
-                    CircularProgressIndicator()
-
-                } else if (state is AsyncImagePainter.State.Error || state is AsyncImagePainter.State.Empty){
-                    Image(painterResource(R.drawable.errorimg),
-                                            stringResource(R.string.imgErrorAlt)
-                                        )
-
-                }
-                else
-                {
-
-                    SubcomposeAsyncImageContent()
-                }
-            }
-            Row(
+            AnimatedVisibility(
+                visible = true,
+                enter = slideInVertically(
+                    // Enters by sliding down from offset -fullHeight to 0.
+                    initialOffsetY = { fullHeight -> -fullHeight }
+                ),
+                exit = slideOutVertically(
+                    // Exits by sliding up from offset 0 to -fullHeight.
+                    targetOffsetY = { fullHeight -> -fullHeight }
+                )
+            )
+            {
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp), horizontalArrangement = Arrangement.SpaceBetween
+                    .fillMaxSize()
+                    .padding(16.dp)
+                    .verticalScroll(scrollState),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                InfoWithIcon(Icons.Default.Edit, info = article.author?: stringResource(R.string.AuthorNull))
-                InfoWithIcon(icon = Icons.Default.DateRange, info = article.publishedAt?: stringResource(
-                                    R.string.DetailDateNotAvail)
-                                )
+                FavoriteButton(article, mainViewModel)
+
+                SubcomposeAsyncImage(
+                    model = article.urlToImage,
+                    contentScale = ContentScale.FillBounds,
+
+                    contentDescription = stringResource(R.string.articleImageAlt),
+
+                    ) {
+
+                    val state = painter.state
+                    if (state is AsyncImagePainter.State.Loading) {
+                        CircularProgressIndicator()
+
+                    } else if (state is AsyncImagePainter.State.Error || state is AsyncImagePainter.State.Empty) {
+                        Image(
+                            painterResource(R.drawable.errorimg),
+                            stringResource(R.string.imgErrorAlt)
+                        )
+
+                    } else {
+
+                        SubcomposeAsyncImageContent()
+                    }
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp), horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    InfoWithIcon(
+                        Icons.Default.Edit,
+                        info = article.author ?: stringResource(R.string.AuthorNull)
+                    )
+                    InfoWithIcon(
+                        icon = Icons.Default.DateRange,
+                        info = article.publishedAt ?: stringResource(
+                            R.string.DetailDateNotAvail
+                        )
+                    )
+                }
+                Text(
+                    text = article.title ?: stringResource(R.string.detailTitleNotAvail),
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = article.description ?: stringResource(R.string.detailDescNotAvail),
+                    modifier = Modifier.padding(top = 16.dp)
+                )
+                Text(
+                    modifier = Modifier.clickable { article.url?.let { it1 -> uriHandler.openUri(uri = it1) } },
+                    text = article.url.toString()
+                )
             }
-            Text(text = article.title?: stringResource(R.string.detailTitleNotAvail), fontWeight = FontWeight.Bold)
-            Text(text = article.description?: stringResource(R.string.detailDescNotAvail), modifier = Modifier.padding(top = 16.dp))
         }
     }
 }

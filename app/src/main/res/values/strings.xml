@@ -22,4 +22,5 @@
     <string name="SignOutButton">sign out</string>
     <string name="RegisterAcc">Register</string>
     <string name="imgErrorAlt">error loading image</string>
+    <string name="articleImageAlt">articleimage</string>
 </resources>
