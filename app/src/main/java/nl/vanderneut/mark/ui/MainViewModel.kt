@@ -28,6 +28,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val newsResponse: Flow<PagingData<TopNewsArticle>>
         get() = _newsResponse
 
+
 //    private val _newsResponse: Flow<PagingData<TopNewsResponse>>
 //    val newsResponse: StateFlow<TopNewsResponse>
 //        get() = _newsResponse
@@ -35,14 +36,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
-    private val _favoriteArticles = mutableStateListOf<String>()
-    val favoriteArticles: List<String> = _favoriteArticles
-    fun addFav(url: String) {
-        _favoriteArticles.add(url)
+    private val _favoriteArticles = mutableStateListOf<TopNewsArticle>()
+    val favoriteArticles: List<TopNewsArticle> = _favoriteArticles
+    fun addFav(art: TopNewsArticle) {
+        _favoriteArticles.add(art)
     }
 
-    fun remove(url: String) {
-        _favoriteArticles.remove(url)
+    fun remove(art: TopNewsArticle) {
+        _favoriteArticles.remove(art)
     }
 
     private val _isError = MutableStateFlow(false)

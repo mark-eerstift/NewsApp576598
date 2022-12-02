@@ -32,13 +32,13 @@ fun SplashScreen(navController: NavController) {
     }
     LaunchedEffect(key1 = true ){
         scale.animateTo(targetValue = 0.9f,
-            animationSpec = tween(durationMillis = 800,
+            animationSpec = tween(durationMillis = 100,
                 easing = {
                     OvershootInterpolator(8f)
                         .getInterpolation(it)
                 })
         )
-        delay(2000L)
+        delay(250)
 
         if (FirebaseAuth.getInstance().currentUser?.email.isNullOrEmpty()){
 
@@ -74,7 +74,7 @@ fun SplashScreen(navController: NavController) {
         ) {
 
             Spacer(modifier = Modifier.height(15.dp))
-            Text(text = "\"Read. Change. Yourself \"",
+            Text(text = "Real news!",
                 style = MaterialTheme.typography.h5,
                 color = Color.LightGray)
 

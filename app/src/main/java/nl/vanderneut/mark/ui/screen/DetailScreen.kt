@@ -51,7 +51,7 @@ fun DetailScreen(article: TopNewsArticle, scrollState: ScrollState,navController
                 .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            FavoriteButton(article.url?:"none", mainViewModel)
+            FavoriteButton(article, mainViewModel)
             SubcomposeAsyncImage(
                 model = article.urlToImage,
                 contentScale = ContentScale.FillBounds,
@@ -115,24 +115,24 @@ fun InfoWithIcon(icon: ImageVector, info: String) {
 
 @Composable
 fun FavoriteButton(
-    url: String,
+    article: TopNewsArticle,
     mainViewModel: MainViewModel,
     modifier: Modifier = Modifier,
     color: Color = Color(0xffE91E63)
 ) {
-    var isFavorite = mainViewModel.favoriteArticles.contains(url)
-    Log.d("favbutton: id", url.toString())
+    var isFavorite = mainViewModel.favoriteArticles.contains(article)
+    Log.d("favbutton: id", article.toString())
 
     IconToggleButton(
         checked = isFavorite,
         onCheckedChange = {
             isFavorite = !isFavorite
             if(isFavorite){
-                mainViewModel.addFav(url)
+                mainViewModel.addFav(article)
             }
             else
             {
-                mainViewModel.remove(url)
+                mainViewModel.remove(article)
             }
         }
 

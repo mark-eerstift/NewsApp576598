@@ -1,5 +1,7 @@
 package nl.vanderneut.mark.models
 
+import android.util.Log
+
 class MapListPager {
     fun mapListPager(entity: TopNewsResponse): Result<TopNewsResponse> = runCatching {
         with(entity) {
@@ -14,6 +16,7 @@ class MapListPager {
 
     fun tryOut(entity: TopNewsResponse): Result<List<TopNewsArticle>> = runCatching {
         with(entity) {
+
             mapResults(entity.articles).getOrThrow()
         }
     }
@@ -26,35 +29,39 @@ class MapListPager {
     }
 
     fun mapResults(entities: List<TopNewsArticle>): Result<List<TopNewsArticle>> = runCatching {
-        entities.map {
-            with(it) {
-                TopNewsArticle(
-                    id = id!!,
-                    source = source!!,
-                    author = author!!,
-                    title = title!!,
-                    description = description!!,
-                    url = url!!,
-                    urlToImage = urlToImage!!,
-                    publishedAt = publishedAt!!,
-                    content = content!!
-                )
+
+            entities.map {
+
+                with(it) {
+
+                    TopNewsArticle(
+                        //  id = id!!,
+                        source = source,
+                        author = author,
+                        title = title,
+                        description = description,
+                        url = url,
+                        urlToImage = urlToImage,
+                        publishedAt = publishedAt,
+                        content = content
+                    )
+                }
             }
-        }
+
     }
 
 
     fun map(entity: TopNewsArticle): Result<TopNewsArticle> = runCatching {
         with(entity) {
             TopNewsArticle(
-                id = id!!,
-                source = source!!,
-                author = author!!,
-                title = title!!,
-                description = description!!,
-                url = url!!,
-                urlToImage = urlToImage!!,
-                publishedAt = publishedAt!!,
+                id = id,
+                source = source,
+                author = author,
+                title = title,
+                description = description,
+                url = url,
+                urlToImage = urlToImage,
+                publishedAt = publishedAt,
                 content = content!!
             )
         }

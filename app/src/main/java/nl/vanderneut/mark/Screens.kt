@@ -10,7 +10,7 @@ enum class Screens {
     SearchScreen,
     DetailScreen,
     TopNews,
-    ReaderStatsScreen;
+    FavoritesScreen;
 
     companion object {
          fun fromRoute(route: String?): Screens
@@ -22,7 +22,7 @@ enum class Screens {
              SearchScreen.name -> SearchScreen
              DetailScreen.name -> DetailScreen
              TopNews.name -> TopNews
-             ReaderStatsScreen.name -> ReaderStatsScreen
+             FavoritesScreen.name -> FavoritesScreen
              null -> TopNews
              else -> throw IllegalArgumentException("Route $route is not recognized")
           }

@@ -51,7 +51,7 @@ fun Navigation(navController:NavHostController, scrollState: ScrollState, paddin
     //val topArticles = viewModel.newsResponse.collectAsState().value.articles
     val articles = viewModel.newsResponse.collectAsLazyPagingItems()
     //Log.d("Toparticles:", topArticles.toString())
-    Log.d("articles:", articles.toString())
+    Log.d("articles:", articles.itemCount.toString())
 
     //articles.addAll(topArticles ?: listOf())
     NavHost(navController = navController, startDestination =Screens.SplashScreen.name,modifier = Modifier.padding(paddingValues)) {
@@ -75,8 +75,6 @@ fun Navigation(navController:NavHostController, scrollState: ScrollState, paddin
             val index = navBackStackEntry.arguments?.getInt("index")
             index?.let {
 
-                   // articles.clear()
-                   // articles.addAll(topArticles?: listOf())
 
                 val article = articles[index]
                 if (article != null) {
@@ -90,6 +88,14 @@ fun Navigation(navController:NavHostController, scrollState: ScrollState, paddin
                 viewModel = viewModel, isLoading = isLoading, isError = isError)
         }
 
+        composable(Screens.FavoritesScreen.name) {
+            FavoritesScreen(
+                navController = navController,
+                viewModel = viewModel, isLoading = isLoading, isError = isError)
+
+        }
+
+
     }
 }
 
@@ -98,12 +104,18 @@ fun NavGraphBuilder.bottomNavigation(navController: NavController, articles: Laz
                                      viewModel: MainViewModel, isLoading: MutableState<Boolean>, isError: MutableState<Boolean>
 ) {
     composable(BottomMenuScreen.TopNews.route) {
-        Log.d("navhost says:", "navgraph making")
-        //Todo 20: replace newsManager with viewModel and pass in a query parameter
+
         TopNews(
             navController = navController,articles,
             viewModel = viewModel, isLoading = isLoading, isError = isError)
-        Log.d("navhost says:", "navgraph done")
+
+    }
+
+    composable(BottomMenuScreen.Favorites.route) {
+        FavoritesScreen(
+            navController = navController,
+            viewModel = viewModel, isLoading = isLoading, isError = isError)
+
     }
 
 

@@ -1,5 +1,6 @@
 package nl.vanderneut.mark.ui.screen
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -19,6 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
@@ -31,13 +33,23 @@ import nl.vanderneut.mark.components.ErrorUI
 import nl.vanderneut.mark.components.LoadingUI
 import nl.vanderneut.mark.ui.MainViewModel
 
+private fun ArticleState(state: LoadState, modifier: Modifier = Modifier) {
+    when (state) {
+        is LoadState.Loading -> {
+            //LoadingUI()
+        }
+        //is LoadState.Error -> ErrorUI()
+        is LoadState.NotLoading -> {}
+    }
+}
+
 @Composable
 fun TopNews(
     navController: NavController, articles: LazyPagingItems<TopNewsArticle>,
     viewModel: MainViewModel, isError: MutableState<Boolean>, isLoading: MutableState<Boolean>
 ) {
     Column(modifier = Modifier.fillMaxSize(),horizontalAlignment = Alignment.CenterHorizontally) {
-        
+
         Text("signed in user: " + FirebaseAuth.getInstance().currentUser?.email)
         Button(onClick = {
             FirebaseAuth.getInstance().signOut().run{
@@ -48,6 +60,11 @@ fun TopNews(
         }
 
 
+
+        val state = articles.loadState
+        Button(onClick = { articles.refresh() }) {
+
+        }
         when{
             isLoading.value ->{
                 LoadingUI()
@@ -55,11 +72,18 @@ fun TopNews(
             isError.value ->{
                 ErrorUI()
             }else ->{
+
+
             LazyColumn {
+                item { ArticleState(state.prepend) }
                 items(articles.itemCount) { index ->
                     articles[index]?.let { TopNewsItem(it, onNewsClick = { navController.navigate("Detail/$index") }) }
                 }
-                }
+
+                item { ArticleState(state.append) }
+            }
+
+            ArticleState(state.refresh)
             }
 
 //            TopNewsItem(article = resultList[index],
