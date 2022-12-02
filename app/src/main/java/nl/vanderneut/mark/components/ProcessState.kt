@@ -7,6 +7,8 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import nl.vanderneut.mark.R
 
 @Composable
 fun LoadingUI(){
@@ -24,6 +26,6 @@ fun ErrorUI(){
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ){
-        Text(text = "An error has occured")
+        Text(text = stringResource(R.string.ErrorUIText))
     }
 }

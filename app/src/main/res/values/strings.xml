@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">NewsApp576598</string>
+    <string name="mailLabel">Email</string>
+    <string name="AuthorNull">Author not available</string>
+    <string name="DetailDateNotAvail">not avail</string>
+    <string name="detailTitleNotAvail">Not Available</string>
+    <string name="detailDescNotAvail">Not Available</string>
+    <string name="DetailScrenTitle">Detail Screen</string>
+    <string name="BackArrowAltText">Arrow Back</string>
+    <string name="authorAltText">Author</string>
+    <string name="SignedInUserName">\"signed in user: \"</string>
+    <string name="signOutButton">sign out</string>
+    <string name="NewUser">New User?</string>
+    <string name="signUp">Sign up</string>
+    <string name="Login">Login</string>
+    <string name="pwdLabel">Password</string>
+    <string name="Register">Create Account</string>
+    <string name="login">Login</string>
+    <string name="ErrorUIText">An error has occured</string>
+    <string name="SplashText">Real news!</string>
+    <string name="HomeSignedIn">"User: "</string>
+    <string name="SignOutButton">sign out</string>
+    <string name="RegisterAcc">Register</string>
+    <string name="imgErrorAlt">error loading image</string>
 </resources>

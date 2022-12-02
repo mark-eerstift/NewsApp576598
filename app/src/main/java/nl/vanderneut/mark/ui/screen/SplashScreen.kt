@@ -17,10 +17,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.delay
+import nl.vanderneut.mark.R
 import nl.vanderneut.mark.Screens
 
 @Composable
@@ -71,7 +73,7 @@ fun SplashScreen(navController: NavController) {
         ) {
 
             Spacer(modifier = Modifier.height(15.dp))
-            Text(text = "Real news!",
+            Text(text = stringResource(R.string.SplashText),
                 style = MaterialTheme.typography.h5,
                 color = Color.LightGray)
 

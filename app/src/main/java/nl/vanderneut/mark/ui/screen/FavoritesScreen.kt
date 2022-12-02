@@ -9,8 +9,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
+import nl.vanderneut.mark.R
 import nl.vanderneut.mark.Screens
 import nl.vanderneut.mark.components.ErrorUI
 import nl.vanderneut.mark.components.LoadingUI
@@ -24,13 +26,13 @@ fun FavoritesScreen(
 ) {
     Column(modifier = Modifier.fillMaxSize(),horizontalAlignment = Alignment.CenterHorizontally) {
 
-        Text("signed in user: " + FirebaseAuth.getInstance().currentUser?.email)
+        Text(stringResource(R.string.SignedInUserName) + FirebaseAuth.getInstance().currentUser?.email)
         Button(onClick = {
             FirebaseAuth.getInstance().signOut().run{
                 navController.navigate(Screens.SplashScreen.name)
             }
         }) {
-            Text("sign out")
+            Text(stringResource(R.string.signOutButton))
         }
 
 

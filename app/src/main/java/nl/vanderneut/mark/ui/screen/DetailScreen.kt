@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -57,7 +58,9 @@ fun DetailScreen(article: TopNewsArticle, scrollState: ScrollState,navController
                     CircularProgressIndicator()
 
                 } else if (state is AsyncImagePainter.State.Error || state is AsyncImagePainter.State.Empty){
-                    Image(painterResource(R.drawable.errorimg),"error loading image")
+                    Image(painterResource(R.drawable.errorimg),
+                                            stringResource(R.string.imgErrorAlt)
+                                        )
 
                 }
                 else
@@ -71,21 +74,23 @@ fun DetailScreen(article: TopNewsArticle, scrollState: ScrollState,navController
                     .fillMaxWidth()
                     .padding(8.dp), horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                InfoWithIcon(Icons.Default.Edit, info = article.author?:"Not Available")
-                InfoWithIcon(icon = Icons.Default.DateRange, info = article.author?:"not avail")
+                InfoWithIcon(Icons.Default.Edit, info = article.author?: stringResource(R.string.AuthorNull))
+                InfoWithIcon(icon = Icons.Default.DateRange, info = article.publishedAt?: stringResource(
+                                    R.string.DetailDateNotAvail)
+                                )
             }
-            Text(text = article.title?:"Not Available", fontWeight = FontWeight.Bold)
-            Text(text = article.description?:"Not Available", modifier = Modifier.padding(top = 16.dp))
+            Text(text = article.title?: stringResource(R.string.detailTitleNotAvail), fontWeight = FontWeight.Bold)
+            Text(text = article.description?: stringResource(R.string.detailDescNotAvail), modifier = Modifier.padding(top = 16.dp))
         }
     }
 }
 
 @Composable
 fun DetailTopAppBar(onBackPressed: () -> Unit = {}) {
-    TopAppBar(title = { Text(text = "Detail Screen", fontWeight = FontWeight.SemiBold) },
+    TopAppBar(title = { Text(text = stringResource(R.string.DetailScrenTitle), fontWeight = FontWeight.SemiBold) },
         navigationIcon = {
             IconButton(onClick = { onBackPressed() }) {
-                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Arrow Back")
+                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = stringResource(R.string.BackArrowAltText))
             }
         })
 }
@@ -95,7 +100,7 @@ fun InfoWithIcon(icon: ImageVector, info: String) {
     Row {
         Icon(
             icon,
-            contentDescription = "Author",
+            contentDescription = stringResource(R.string.authorAltText),
             modifier = Modifier.padding(end = 8.dp),
             colorResource(
                 id = R.color.purple_500

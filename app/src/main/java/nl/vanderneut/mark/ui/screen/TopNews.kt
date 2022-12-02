@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -49,13 +50,13 @@ fun TopNews(
 ) {
     Column(modifier = Modifier.fillMaxSize(),horizontalAlignment = Alignment.CenterHorizontally) {
 
-        Text("signed in user: " + FirebaseAuth.getInstance().currentUser?.email)
+        Text(stringResource(R.string.HomeSignedIn) + FirebaseAuth.getInstance().currentUser?.email)
         Button(onClick = {
             FirebaseAuth.getInstance().signOut().run{
                 navController.navigate(Screens.SplashScreen.name)
             }
         }) {
-            Text("sign out")
+            Text(stringResource(R.string.SignOutButton))
         }
 
 

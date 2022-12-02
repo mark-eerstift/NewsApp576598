@@ -17,10 +17,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import nl.vanderneut.mark.R
 import nl.vanderneut.mark.Screens
 import nl.vanderneut.mark.components.EmailInput
 import nl.vanderneut.mark.components.ErrorUI
@@ -73,8 +75,9 @@ fun LoginScreen(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
            ) {
-            val text = if (showLoginForm.value) "Sign up" else "Login"
-            Text(text = "New User?")
+            val text = if (showLoginForm.value) stringResource(R.string.signUp) else stringResource(
+                            R.string.Login)
+            Text(text = stringResource(R.string.NewUser))
             Text(text,
                 modifier = Modifier
                     .clickable {
@@ -116,7 +119,7 @@ fun UserForm(
     
     Column(modifier,
         horizontalAlignment = Alignment.CenterHorizontally) {
-        if (isCreateAccount) Text(text = "make acc")
+        if (isCreateAccount) Text(text = stringResource(R.string.RegisterAcc))
 
         EmailInput(
             emailState = email, enabled = !loading,
@@ -127,7 +130,7 @@ fun UserForm(
         PasswordInput(
             modifier = Modifier.focusRequester(passwordFocusRequest),
             passwordState = password,
-            labelId = "Password",
+            labelId = stringResource(R.string.pwdLabel),
             enabled = !loading, //Todo change this
             passwordVisibility = passwordVisibility,
             onAction = KeyboardActions {
@@ -136,7 +139,7 @@ fun UserForm(
             })
 
           SubmitButton(
-              textId = if (isCreateAccount) "Create Account" else "Login",
+              textId = if (isCreateAccount) stringResource(R.string.Register) else stringResource(R.string.login),
               loading = loading,
               validInputs = valid
                       ){
