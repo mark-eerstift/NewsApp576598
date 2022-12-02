@@ -24,11 +24,11 @@ fun FavoritesScreen(
     navController: NavController,
     viewModel: MainViewModel, isError: MutableState<Boolean>, isLoading: MutableState<Boolean>
 ) {
-    Column(modifier = Modifier.fillMaxSize(),horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
 
         Text(stringResource(R.string.SignedInUserName) + FirebaseAuth.getInstance().currentUser?.email)
         Button(onClick = {
-            FirebaseAuth.getInstance().signOut().run{
+            FirebaseAuth.getInstance().signOut().run {
                 navController.navigate(Screens.SplashScreen.name)
             }
         }) {
@@ -36,29 +36,30 @@ fun FavoritesScreen(
         }
 
 
-        when{
-            isLoading.value ->{
+        when {
+            isLoading.value -> {
                 LoadingUI()
             }
-            isError.value ->{
+            isError.value -> {
                 ErrorUI()
-            }else ->{
+            }
+            else -> {
 
 
-            LazyColumn {
-                items(viewModel.favoriteArticles.size) { index ->
-                    TopNewsItem(article = viewModel.favoriteArticles[index],
-                        onNewsClick = { navController.navigate("Detail/$index") }
-                    )
+                LazyColumn {
+                    items(viewModel.favoriteArticles.size) { index ->
+                        TopNewsItem(article = viewModel.favoriteArticles[index],
+                            onNewsClick = { navController.navigate("Detail/$index") }
+                        )
+                    }
                 }
             }
-                }
-            }
-
-
-            }
-
-
         }
+
+
+    }
+
+
+}
 
 

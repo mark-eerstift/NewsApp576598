@@ -17,16 +17,14 @@ object Api {
         .build()
 
 
-
     private val httpClient = OkHttpClient.Builder().apply {
         addInterceptor(
-            Interceptor{chain->
+            Interceptor { chain ->
                 val builder = chain.request().newBuilder()
-               // builder.header("X-Api-Key","0068ac69d80f4a97b794fa26311cb323")
+                // builder.header("X-Api-Key","0068ac69d80f4a97b794fa26311cb323")
                 return@Interceptor chain.proceed(builder.build())
             }
         )
-
 
 
     }.build()

@@ -27,11 +27,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val newsResponse: Flow<PagingData<TopNewsArticle>>
         get() = _newsResponse
 
-
-//    private val _newsResponse: Flow<PagingData<TopNewsResponse>>
-//    val newsResponse: StateFlow<TopNewsResponse>
-//        get() = _newsResponse
-
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
@@ -49,9 +44,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val isError: StateFlow<Boolean>
         get() = _isError
 
-    val errorHandler = CoroutineExceptionHandler{
-        _, error ->
-        if(error is Exception){
+    val errorHandler = CoroutineExceptionHandler { _, error ->
+        if (error is Exception) {
             _isError.value = true
         }
     }

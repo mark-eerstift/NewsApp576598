@@ -21,9 +21,9 @@ class ArticlesPager(
     private val _isError = MutableStateFlow(true)
     val isError: StateFlow<Boolean> = _isError
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, TopNewsArticle>{
-        _isLoading.value  = true
-        val result = fetch(params.key?:-1, params.loadSize).getOrElse{
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, TopNewsArticle> {
+        _isLoading.value = true
+        val result = fetch(params.key ?: -1, params.loadSize).getOrElse {
 
 
             val isError: StateFlow<Boolean> = _isError
@@ -33,10 +33,10 @@ class ArticlesPager(
 
         Log.d("pager", result.toString())
         _isLoading.value = false
-        return LoadResult.Page(result, null, (params.key ?:0) +1)
+        return LoadResult.Page(result, null, (params.key ?: 0) + 1)
     }
 
-    private suspend fun fetch(startKey: Int, loadSize: Int): Result<List<TopNewsArticle>>{
+    private suspend fun fetch(startKey: Int, loadSize: Int): Result<List<TopNewsArticle>> {
 
 
         val response = repository.getArticles(startKey)
@@ -58,8 +58,10 @@ class ArticlesPager(
                 }
             }
 
-            else -> {Log.d("pager", "result fails")
-                Result.failure(Exception(IllegalStateException()))}
+            else -> {
+                Log.d("pager", "result fails")
+                Result.failure(Exception(IllegalStateException()))
+            }
         }
     }
 }

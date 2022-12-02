@@ -1,6 +1,5 @@
 package nl.vanderneut.mark.ui.screen
 
-import android.util.Log
 import android.view.animation.OvershootInterpolator
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
@@ -31,8 +30,9 @@ fun SplashScreen(navController: NavController) {
     val scale = remember {
         Animatable(0f)
     }
-    LaunchedEffect(key1 = true ){
-        scale.animateTo(targetValue = 0.9f,
+    LaunchedEffect(key1 = true) {
+        scale.animateTo(
+            targetValue = 0.9f,
             animationSpec = tween(durationMillis = 100,
                 easing = {
                     OvershootInterpolator(8f)
@@ -41,30 +41,31 @@ fun SplashScreen(navController: NavController) {
         )
         delay(250)
 
-        if (FirebaseAuth.getInstance().currentUser?.email.isNullOrEmpty()){
+        if (FirebaseAuth.getInstance().currentUser?.email.isNullOrEmpty()) {
 
             navController.navigate(Screens.LoginScreen.name)
 
-        }else {
+        } else {
 
-            //HERE IS THE ISSUE, this needs to point to the homepage.
+
             navController.navigate(Screens.TopNews.name)
 
         }
 
 
-
-
     }
 
-    Surface(modifier = Modifier
-        .padding(15.dp)
-        .size(330.dp)
-        .scale(scale.value),
+    Surface(
+        modifier = Modifier
+            .padding(15.dp)
+            .size(330.dp)
+            .scale(scale.value),
         shape = CircleShape,
         color = Color.White,
-        border = BorderStroke(width = 2.dp,
-            color = Color.LightGray)
+        border = BorderStroke(
+            width = 2.dp,
+            color = Color.LightGray
+        )
     ) {
         Column(
             modifier = Modifier.padding(1.dp),
@@ -73,10 +74,11 @@ fun SplashScreen(navController: NavController) {
         ) {
 
             Spacer(modifier = Modifier.height(15.dp))
-            Text(text = stringResource(R.string.SplashText),
+            Text(
+                text = stringResource(R.string.SplashText),
                 style = MaterialTheme.typography.h5,
-                color = Color.LightGray)
-
+                color = Color.LightGray
+            )
 
 
         }

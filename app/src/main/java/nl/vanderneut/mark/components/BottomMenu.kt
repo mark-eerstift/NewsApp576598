@@ -15,7 +15,7 @@ import nl.vanderneut.mark.R
 
 
 @Composable
-fun BottomMenu(navController:NavController) {
+fun BottomMenu(navController: NavController) {
 
     val menuItems = listOf(
         BottomMenuScreen.TopNews,

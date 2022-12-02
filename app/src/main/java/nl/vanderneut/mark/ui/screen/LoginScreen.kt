@@ -1,6 +1,5 @@
 package nl.vanderneut.mark.ui.screen
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -34,49 +33,53 @@ import nl.vanderneut.mark.components.PasswordInput
 fun LoginScreen(
     navController: NavController,
     viewModel: LoginScreenViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
-                     ) {
+) {
     val showLoginForm = rememberSaveable { mutableStateOf(true) }
     val isError by viewModel.isError.collectAsState()
 
 
     Surface(modifier = Modifier.fillMaxSize()) {
-      Column(horizontalAlignment = Alignment.CenterHorizontally,
-          verticalArrangement = Arrangement.Top) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ) {
 
 
-          when{
-              isError ->{
-          ErrorUI()
-      }else -> {
-              if (showLoginForm.value) UserForm(loading = false, isCreateAccount = false){ email, password ->
-                  viewModel.signInWithEmailAndPassword(email, password){
-                      navController.navigate(Screens.TopNews.name)
+            when {
+                isError -> {
+                    ErrorUI()
+                }
+                else -> {
+                    if (showLoginForm.value) UserForm(
+                        loading = false,
+                        isCreateAccount = false
+                    ) { email, password ->
+                        viewModel.signInWithEmailAndPassword(email, password) {
+                            navController.navigate(Screens.TopNews.name)
 
-                  }
-              }
-              else {
-                  UserForm(loading = false, isCreateAccount = true) { email, password ->
-                      viewModel.createUserWithEmailAndPassword(email, password) {
-                          navController.navigate(Screens.TopNews.name)
-                      }
-                  }
-              }
-          }
-          }
+                        }
+                    }
+                    else {
+                        UserForm(loading = false, isCreateAccount = true) { email, password ->
+                            viewModel.createUserWithEmailAndPassword(email, password) {
+                                navController.navigate(Screens.TopNews.name)
+                            }
+                        }
+                    }
+                }
+            }
 
 
-
-
-
-      }
+        }
         Spacer(modifier = Modifier.height(15.dp))
         Row(
             modifier = Modifier.padding(15.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
-           ) {
+        ) {
             val text = if (showLoginForm.value) stringResource(R.string.signUp) else stringResource(
-                            R.string.Login)
+                R.string.Login
+            )
             Text(text = stringResource(R.string.NewUser))
             Text(text,
                 modifier = Modifier
@@ -100,15 +103,15 @@ fun LoginScreen(
 fun UserForm(
     loading: Boolean = false,
     isCreateAccount: Boolean = false,
-    onDone: (String, String) -> Unit = { email, pwd ->}
-            ) {
+    onDone: (String, String) -> Unit = { email, pwd -> }
+) {
     val email = rememberSaveable { mutableStateOf("") }
     val password = rememberSaveable { mutableStateOf("") }
     val passwordVisibility = rememberSaveable { mutableStateOf(false) }
     val passwordFocusRequest = FocusRequester.Default
     val keyboardController = LocalSoftwareKeyboardController.current
     val valid = remember(email.value, password.value) {
-         email.value.trim().isNotEmpty() && password.value.trim().isNotEmpty()
+        email.value.trim().isNotEmpty() && password.value.trim().isNotEmpty()
 
     }
     val modifier = Modifier
@@ -116,9 +119,11 @@ fun UserForm(
         .background(MaterialTheme.colors.background)
         .verticalScroll(rememberScrollState())
 
-    
-    Column(modifier,
-        horizontalAlignment = Alignment.CenterHorizontally) {
+
+    Column(
+        modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         if (isCreateAccount) Text(text = stringResource(R.string.RegisterAcc))
 
         EmailInput(
@@ -126,27 +131,26 @@ fun UserForm(
             onAction = KeyboardActions {
                 passwordFocusRequest.requestFocus()
             },
-                  )
+        )
         PasswordInput(
             modifier = Modifier.focusRequester(passwordFocusRequest),
             passwordState = password,
             labelId = stringResource(R.string.pwdLabel),
-            enabled = !loading, //Todo change this
+            enabled = !loading,
             passwordVisibility = passwordVisibility,
             onAction = KeyboardActions {
                 if (!valid) return@KeyboardActions
                 onDone(email.value.trim(), password.value.trim())
             })
 
-          SubmitButton(
-              textId = if (isCreateAccount) stringResource(R.string.Register) else stringResource(R.string.login),
-              loading = loading,
-              validInputs = valid
-                      ){
-                 onDone(email.value.trim(), password.value.trim())
-              keyboardController?.hide()
-          }
-
+        SubmitButton(
+            textId = if (isCreateAccount) stringResource(R.string.Register) else stringResource(R.string.login),
+            loading = loading,
+            validInputs = valid
+        ) {
+            onDone(email.value.trim(), password.value.trim())
+            keyboardController?.hide()
+        }
 
 
     }
@@ -155,19 +159,21 @@ fun UserForm(
 }
 
 @Composable
-fun SubmitButton(textId: String,
-                 loading: Boolean,
-                 validInputs: Boolean,
-                onClick: () -> Unit) {
+fun SubmitButton(
+    textId: String,
+    loading: Boolean,
+    validInputs: Boolean,
+    onClick: () -> Unit
+) {
     Button(
         onClick = onClick,
         modifier = Modifier
             .padding(3.dp)
             .fillMaxWidth(),
-          enabled = !loading && validInputs,
+        enabled = !loading && validInputs,
         shape = CircleShape
-          ) {
-         if (loading) CircularProgressIndicator(modifier = Modifier.size(25.dp))
+    ) {
+        if (loading) CircularProgressIndicator(modifier = Modifier.size(25.dp))
         else Text(text = textId, modifier = Modifier.padding(5.dp))
 
     }

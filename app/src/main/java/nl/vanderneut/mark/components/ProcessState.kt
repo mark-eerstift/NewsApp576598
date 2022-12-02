@@ -11,21 +11,21 @@ import androidx.compose.ui.res.stringResource
 import nl.vanderneut.mark.R
 
 @Composable
-fun LoadingUI(){
+fun LoadingUI() {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
-    ){
+    ) {
         CircularProgressIndicator()
     }
 }
 
 @Composable
-fun ErrorUI(){
+fun ErrorUI() {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
-    ){
+    ) {
         Text(text = stringResource(R.string.ErrorUIText))
     }
 }

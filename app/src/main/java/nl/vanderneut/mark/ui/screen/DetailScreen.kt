@@ -1,7 +1,8 @@
 package nl.vanderneut.mark.ui.screen
 
-import android.util.Log
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
@@ -31,31 +32,33 @@ import nl.vanderneut.mark.R
 import nl.vanderneut.mark.models.TopNewsArticle
 import nl.vanderneut.mark.ui.MainViewModel
 
-/**Todo 13: replace newsData with topNewsArticle and also replace the element values with data from it
- * Replace Image with CoilImage
- * For each Text we use elvis operator ?: to set the the value if its not null else set Not Available
- */
+
 @Composable
-fun DetailScreen(article: TopNewsArticle, scrollState: ScrollState,navController: NavController, mainViewModel: MainViewModel) {
+fun DetailScreen(
+    article: TopNewsArticle,
+    scrollState: ScrollState,
+    navController: NavController,
+    mainViewModel: MainViewModel
+) {
     val uriHandler = LocalUriHandler.current
     var visible by remember { mutableStateOf(false) }
 
-        Scaffold(topBar = {
-            DetailTopAppBar(onBackPressed = { navController.popBackStack() })
-        }) {
+    Scaffold(topBar = {
+        DetailTopAppBar(onBackPressed = { navController.popBackStack() })
+    }) {
 
-            AnimatedVisibility(
-                visible = true,
-                enter = slideInVertically(
-                    // Enters by sliding down from offset -fullHeight to 0.
-                    initialOffsetY = { fullHeight -> -fullHeight }
-                ),
-                exit = slideOutVertically(
-                    // Exits by sliding up from offset 0 to -fullHeight.
-                    targetOffsetY = { fullHeight -> -fullHeight }
-                )
+        AnimatedVisibility(
+            visible = true,
+            enter = slideInVertically(
+                // Enters by sliding down from offset -fullHeight to 0.
+                initialOffsetY = { fullHeight -> -fullHeight }
+            ),
+            exit = slideOutVertically(
+                // Exits by sliding up from offset 0 to -fullHeight.
+                targetOffsetY = { fullHeight -> -fullHeight }
             )
-            {
+        )
+        {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -123,10 +126,18 @@ fun DetailScreen(article: TopNewsArticle, scrollState: ScrollState,navController
 
 @Composable
 fun DetailTopAppBar(onBackPressed: () -> Unit = {}) {
-    TopAppBar(title = { Text(text = stringResource(R.string.DetailScrenTitle), fontWeight = FontWeight.SemiBold) },
+    TopAppBar(title = {
+        Text(
+            text = stringResource(R.string.DetailScrenTitle),
+            fontWeight = FontWeight.SemiBold
+        )
+    },
         navigationIcon = {
             IconButton(onClick = { onBackPressed() }) {
-                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = stringResource(R.string.BackArrowAltText))
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = stringResource(R.string.BackArrowAltText)
+                )
             }
         })
 }
@@ -159,11 +170,9 @@ fun FavoriteButton(
         checked = isFavorite,
         onCheckedChange = {
             isFavorite = !isFavorite
-            if(isFavorite){
+            if (isFavorite) {
                 mainViewModel.addFav(article)
-            }
-            else
-            {
+            } else {
                 mainViewModel.remove(article)
             }
         }

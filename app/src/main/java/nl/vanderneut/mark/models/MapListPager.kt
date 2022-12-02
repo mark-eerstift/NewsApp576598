@@ -28,23 +28,23 @@ class MapListPager {
 
     fun mapResults(entities: List<TopNewsArticle>): Result<List<TopNewsArticle>> = runCatching {
 
-            entities.map {
+        entities.map {
 
-                with(it) {
+            with(it) {
 
-                    TopNewsArticle(
-                        //  id = id!!,
-                        source = source,
-                        author = author,
-                        title = title,
-                        description = description,
-                        url = url,
-                        urlToImage = urlToImage,
-                        publishedAt = publishedAt,
-                        content = content
-                    )
-                }
+                TopNewsArticle(
+                    //  id = id!!,
+                    source = source,
+                    author = author,
+                    title = title,
+                    description = description,
+                    url = url,
+                    urlToImage = urlToImage,
+                    publishedAt = publishedAt,
+                    content = content
+                )
             }
+        }
 
     }
 
@@ -64,8 +64,6 @@ class MapListPager {
             )
         }
     }
-
-
 
 
 }

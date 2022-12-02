@@ -5,7 +5,7 @@ import nl.vanderneut.mark.api.Api
 import nl.vanderneut.mark.api.NewsManager
 import nl.vanderneut.mark.api.Repository
 
-class MainApp: Application() {
+class MainApp : Application() {
 
     private val manager by lazy {
         NewsManager(Api.retrofitService)
