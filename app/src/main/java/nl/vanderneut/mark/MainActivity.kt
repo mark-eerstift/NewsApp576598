@@ -5,8 +5,8 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import nl.vanderneut.mark.ui.MainViewModel
 import nl.vanderneut.mark.ui.NewsApp576598
 import nl.vanderneut.mark.ui.theme.NewsApp576598Theme
@@ -22,7 +22,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             NewsApp576598Theme {
                 // A surface container using the 'background' color from the theme
-                Surface(color = MaterialTheme.colors.background) {
+                Surface(color = MaterialTheme.colorScheme.background) {
                     NewsApp576598(viewModel)
 
                 }

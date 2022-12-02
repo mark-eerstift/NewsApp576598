@@ -19,7 +19,8 @@ fun BottomMenu(navController:NavController) {
 
     val menuItems = listOf(
         BottomMenuScreen.TopNews,
-        BottomMenuScreen.Favorites,
+        //BottomMenuScreen.Categories,
+       // BottomMenuScreen.Sources
     )
     BottomNavigation(contentColor = colorResource(id = R.color.white))
     {

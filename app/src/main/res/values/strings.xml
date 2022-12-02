@@ -5,10 +5,10 @@
     <string name="DetailDateNotAvail">not avail</string>
     <string name="detailTitleNotAvail">Not Available</string>
     <string name="detailDescNotAvail">Not Available</string>
-    <string name="DetailScrenTitle">Detail Screen</string>
+    <string name="DetailScrenTitle">Details</string>
     <string name="BackArrowAltText">Arrow Back</string>
     <string name="authorAltText">Author</string>
-    <string name="SignedInUserName">\"signed in user: \"</string>
+    <string name="SignedInUserName">User:</string>
     <string name="signOutButton">sign out</string>
     <string name="NewUser">New User?</string>
     <string name="signUp">Sign up</string>

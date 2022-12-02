@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">NewsApp576598</string>
+    <string name="mailLabel">Email</string>
+    <string name="AuthorNull">Auteur niet bekend</string>
+    <string name="DetailDateNotAvail">niet beschikbaar</string>
+    <string name="detailTitleNotAvail">titel niet beschikbaar</string>
+    <string name="detailDescNotAvail">details niet beschikbaar</string>
+    <string name="DetailScrenTitle">Details</string>
+    <string name="BackArrowAltText">Terug</string>
+    <string name="authorAltText">Auteur</string>
+    <string name="SignedInUserName">gebruiker</string>
+    <string name="signOutButton">Afmelden</string>
+    <string name="NewUser">Nieuwe Gebruiker?</string>
+    <string name="signUp">Registreer</string>
+    <string name="Login">Inloggen</string>
+    <string name="pwdLabel">Wachtwoord</string>
+    <string name="Register">Maak account</string>
+    <string name="login">Inloggen</string>
+    <string name="ErrorUIText">Er is een fout opgetreden</string>
+    <string name="SplashText">Echt nieuws</string>
+    <string name="HomeSignedIn">Gebruiker</string>
+    <string name="SignOutButton">Uitloggen</string>
+    <string name="RegisterAcc">Registreren</string>
+    <string name="imgErrorAlt">Afbeeldingfout</string>
+    <string name="articleImageAlt">afbeelding fout</string>
+</resources>
