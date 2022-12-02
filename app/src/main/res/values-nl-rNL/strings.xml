@@ -24,4 +24,7 @@
     <string name="RegisterAcc">Registreren</string>
     <string name="imgErrorAlt">Afbeeldingfout</string>
     <string name="articleImageAlt">afbeelding fout</string>
+    <string name="titlenotavail">Niet beshikbaar</string>
+    <string name="authornotavail">Niet beschikbaar</string>
+    <string name="refrsh">Ververs.</string>
 </resources>

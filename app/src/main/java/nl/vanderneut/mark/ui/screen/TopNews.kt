@@ -48,59 +48,71 @@ fun TopNews(
     navController: NavController, articles: LazyPagingItems<TopNewsArticle>,
     viewModel: MainViewModel, isError: MutableState<Boolean>, isLoading: MutableState<Boolean>
 ) {
-    Column(modifier = Modifier.fillMaxSize(),horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+        Row {
+            Text(stringResource(R.string.HomeSignedIn) + FirebaseAuth.getInstance().currentUser?.email)
+            Button(onClick = {
+                FirebaseAuth.getInstance().signOut().run {
+                    navController.navigate(Screens.SplashScreen.name)
+                }
+            }) {
+                Text(stringResource(R.string.SignOutButton))
 
-        Text(stringResource(R.string.HomeSignedIn) + FirebaseAuth.getInstance().currentUser?.email)
-        Button(onClick = {
-            FirebaseAuth.getInstance().signOut().run{
-                navController.navigate(Screens.SplashScreen.name)
             }
-        }) {
-            Text(stringResource(R.string.SignOutButton))
+            Button(onClick = { articles.refresh() }) {
+                Text(text = stringResource(R.string.refrsh))
+            }
         }
-
-
 
         val state = articles.loadState
-        Button(onClick = { articles.refresh() }) {
 
-        }
-        when{
-            isLoading.value ->{
+        when {
+            isLoading.value -> {
                 LoadingUI()
             }
-            isError.value ->{
+            isError.value -> {
                 ErrorUI()
-            }else ->{
+            }
+            else -> {
 
 
-            LazyColumn {
-                item { ArticleState(state.prepend) }
-                items(articles.itemCount) { index ->
-                    articles[index]?.let { TopNewsItem(it, onNewsClick = { navController.navigate("Detail/$index") }) }
+                LazyColumn {
+
+
+                    item { ArticleState(state.prepend) }
+                    items(articles.itemCount) { index ->
+                        articles[index]?.let {
+                            TopNewsItem(
+                                it,
+                                onNewsClick = { navController.navigate("Detail/$index") })
+                        }
+                    }
+
+                    item { ArticleState(state.append) }
                 }
 
-                item { ArticleState(state.append) }
-            }
-
-            ArticleState(state.refresh)
+                ArticleState(state.refresh)
             }
 
 
-            }
         }
-
-
     }
 
 
+}
+
+
 @Composable
-fun TopNewsItem(article: TopNewsArticle, modifier:Modifier = Modifier
-    .padding(8.dp)
-    .clickable {
-        onNewsClick()
-    }, onNewsClick: () -> Unit = {},){
-    Card(modifier,border = BorderStroke(2.dp,color = colorResource(id = R.color.purple_500))) {
+fun TopNewsItem(
+    article: TopNewsArticle,
+    modifier: Modifier = Modifier
+        .padding(8.dp)
+        .clickable {
+            onNewsClick()
+        },
+    onNewsClick: () -> Unit = {},
+) {
+    Card(modifier, border = BorderStroke(2.dp, color = colorResource(id = R.color.purple_500))) {
         Row(modifier.fillMaxWidth()) {
             SubcomposeAsyncImage(
                 model = article.urlToImage,
@@ -114,20 +126,21 @@ fun TopNewsItem(article: TopNewsArticle, modifier:Modifier = Modifier
                 if (state is AsyncImagePainter.State.Loading) {
                     CircularProgressIndicator()
 
-                } else if (state is AsyncImagePainter.State.Error || state is AsyncImagePainter.State.Empty){
-                    Image(painterResource(R.drawable.errorimg),"error loading image")
+                } else if (state is AsyncImagePainter.State.Error || state is AsyncImagePainter.State.Empty) {
+                    Image(painterResource(R.drawable.errorimg), "error loading image")
 
-                }
-                else
-                {
+                } else {
 
                     SubcomposeAsyncImageContent()
                 }
             }
-            Column(modifier ) {
-                Text(text = article.title ?: "Not Available", fontWeight = FontWeight.Bold)
+            Column(modifier) {
+                Text(
+                    text = article.title ?: stringResource(R.string.titlenotavail),
+                    fontWeight = FontWeight.Bold
+                )
                 Row {
-                    Text(text = article.author?:"Not Available")
+                    Text(text = article.author ?: stringResource(R.string.authornotavail))
                 }
             }
         }
@@ -138,10 +151,12 @@ fun TopNewsItem(article: TopNewsArticle, modifier:Modifier = Modifier
 @Preview(showBackground = true)
 @Composable
 fun TopNewsPreview() {
-    TopNewsItem(  TopNewsArticle(
-        author = "Namita Singh",
-        title = "Cleo Smith news — live: Kidnap suspect 'in hospital again' as 'hard police grind' credited for breakthrough - The Independent",
-        description = "The suspected kidnapper of four-year-old Cleo Smith has been treated in hospital for a second time amid reports he was “attacked” while in custody.",
-        publishedAt = "2021-11-04T04:42:40Z"
-    ))
+    TopNewsItem(
+        TopNewsArticle(
+            author = "Namita Singh",
+            title = "Cleo Smith news — live: Kidnap suspect 'in hospital again' as 'hard police grind' credited for breakthrough - The Independent",
+            description = "The suspected kidnapper of four-year-old Cleo Smith has been treated in hospital for a second time amid reports he was “attacked” while in custody.",
+            publishedAt = "2021-11-04T04:42:40Z"
+        )
+    )
 }

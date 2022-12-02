@@ -31,7 +31,7 @@ class ArticlesPager(
 
         }
 
-
+        Log.d("pager", result.toString())
         _isLoading.value = false
         return LoadResult.Page(result, null, (params.key ?:0) +1)
     }
@@ -53,7 +53,7 @@ class ArticlesPager(
                     exx
 
                 } else {
-                    Log.d("pager", "body null")
+
                     Result.failure(IllegalStateException())
                 }
             }
