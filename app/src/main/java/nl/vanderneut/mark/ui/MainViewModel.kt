@@ -4,21 +4,17 @@ import android.app.Application
 import androidx.compose.runtime.*
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 import nl.vanderneut.mark.MainApp
-import nl.vanderneut.mark.models.TopNewsResponse
-import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
 import nl.vanderneut.mark.models.ArticlesPager
+import nl.vanderneut.mark.models.MapListPager
 import nl.vanderneut.mark.models.TopNewsArticle
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
