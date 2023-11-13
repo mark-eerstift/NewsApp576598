@@ -40,6 +40,7 @@ private fun ArticleState(state: LoadState, modifier: Modifier = Modifier) {
         }
         //is LoadState.Error -> ErrorUI()
         is LoadState.NotLoading -> {}
+        else -> {}
     }
 }
 
@@ -108,7 +109,7 @@ fun TopNewsItem(
     modifier: Modifier = Modifier
         .padding(8.dp)
         .clickable {
-            onNewsClick()
+            //onNewsClick()
         },
     onNewsClick: () -> Unit = {},
 ) {
