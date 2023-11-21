@@ -1,5 +1,6 @@
 package nl.vanderneut.mark.ui.screen
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -33,6 +34,8 @@ import nl.vanderneut.mark.models.TopNewsArticle
 import nl.vanderneut.mark.ui.MainViewModel
 
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+//TODO: fix this suppressed error,
 @Composable
 fun DetailScreen(
     article: TopNewsArticle,
@@ -69,7 +72,7 @@ fun DetailScreen(
                 FavoriteButton(article, mainViewModel)
 
                 SubcomposeAsyncImage(
-                    model = article.urlToImage,
+                    model = article.image,
                     contentScale = ContentScale.FillBounds,
 
                     contentDescription = stringResource(R.string.articleImageAlt),
@@ -96,13 +99,13 @@ fun DetailScreen(
                         .fillMaxWidth()
                         .padding(8.dp), horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    InfoWithIcon(
+                    /*InfoWithIcon(
                         Icons.Default.Edit,
-                        info = article.author ?: stringResource(R.string.AuthorNull)
-                    )
+                        info = article.feed ?: stringResource(R.string.AuthorNull)
+                    )*/
                     InfoWithIcon(
                         icon = Icons.Default.DateRange,
-                        info = article.publishedAt ?: stringResource(
+                        info = article.publishDate ?: stringResource(
                             R.string.DetailDateNotAvail
                         )
                     )
@@ -112,7 +115,7 @@ fun DetailScreen(
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = article.description ?: stringResource(R.string.detailDescNotAvail),
+                    text = article.summary ?: stringResource(R.string.detailDescNotAvail),
                     modifier = Modifier.padding(top = 16.dp)
                 )
                 Text(

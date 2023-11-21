@@ -1,9 +1,15 @@
 package nl.vanderneut.mark.ui.screen
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Button
 import androidx.compose.material.Card
@@ -46,9 +52,11 @@ private fun ArticleState(state: LoadState, modifier: Modifier = Modifier) {
 
 @Composable
 fun TopNews(
+
     navController: NavController, articles: LazyPagingItems<TopNewsArticle>,
     viewModel: MainViewModel, isError: MutableState<Boolean>, isLoading: MutableState<Boolean>
 ) {
+    Log.d("topnews.kt", "were here")
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         Row {
             Text(stringResource(R.string.HomeSignedIn) + FirebaseAuth.getInstance().currentUser?.email)
@@ -66,21 +74,24 @@ fun TopNews(
         }
 
         val state = articles.loadState
-
+        Log.d("topnews.kt", "loadstate is set")
         when {
             isLoading.value -> {
                 LoadingUI()
+                Log.d("topnews.kt", "loadibng now")
             }
             isError.value -> {
                 ErrorUI()
+                Log.d("topnews.kt", "errorui")
             }
             else -> {
 
 
                 LazyColumn {
 
-
+                    Log.d("topnews.kt", "lazycol")
                     item { ArticleState(state.prepend) }
+                    Log.d("topnews.kt", "items")
                     items(articles.itemCount) { index ->
                         articles[index]?.let {
                             TopNewsItem(
@@ -93,6 +104,7 @@ fun TopNews(
                 }
 
                 ArticleState(state.refresh)
+
             }
 
 
@@ -116,7 +128,7 @@ fun TopNewsItem(
     Card(modifier, border = BorderStroke(2.dp, color = colorResource(id = R.color.purple_500))) {
         Row(modifier.fillMaxWidth()) {
             SubcomposeAsyncImage(
-                model = article.urlToImage,
+                model = article.image,
                 modifier = Modifier.size(100.dp),
 
                 contentDescription = "",
@@ -140,9 +152,9 @@ fun TopNewsItem(
                     text = article.title ?: stringResource(R.string.titlenotavail),
                     fontWeight = FontWeight.Bold
                 )
-                Row {
+                /*Row {
                     Text(text = article.author ?: stringResource(R.string.authornotavail))
-                }
+                }*/
             }
         }
 
@@ -154,10 +166,10 @@ fun TopNewsItem(
 fun TopNewsPreview() {
     TopNewsItem(
         TopNewsArticle(
-            author = "Namita Singh",
+            //author = "Namita Singh",
             title = "Cleo Smith news — live: Kidnap suspect 'in hospital again' as 'hard police grind' credited for breakthrough - The Independent",
-            description = "The suspected kidnapper of four-year-old Cleo Smith has been treated in hospital for a second time amid reports he was “attacked” while in custody.",
-            publishedAt = "2021-11-04T04:42:40Z"
+            summary = "The suspected kidnapper of four-year-old Cleo Smith has been treated in hospital for a second time amid reports he was “attacked” while in custody.",
+            publishDate = "2021-11-04T04:42:40Z"
         )
     )
 }

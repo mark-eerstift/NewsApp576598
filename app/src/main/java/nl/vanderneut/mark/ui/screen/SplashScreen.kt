@@ -1,10 +1,16 @@
 package nl.vanderneut.mark.ui.screen
 
+import android.util.Log
 import android.view.animation.OvershootInterpolator
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -42,12 +48,12 @@ fun SplashScreen(navController: NavController) {
         delay(250)
 
         if (FirebaseAuth.getInstance().currentUser?.email.isNullOrEmpty()) {
-
+            Log.d("splash", "nosignedin")
             navController.navigate(Screens.LoginScreen.name)
 
         } else {
 
-
+            Log.d("splash", "signedin")
             navController.navigate(Screens.TopNews.name)
 
         }

@@ -1,14 +1,14 @@
 package nl.vanderneut.mark.models
 
 class MapListPager {
-    fun mapListPager(entity: TopNewsResponse): Result<TopNewsResponse> = runCatching {
+ /*   fun mapListPager(entity: TopNewsResponse): Result<TopNewsResponse> = runCatching {
         with(entity) {
             TopNewsResponse(
                 results = mapResults(results).getOrThrow(),
                 nextId = nextId!!
             )
         }
-    }
+    }*/
 
 
     fun tryOut(entity: TopNewsResponse): Result<List<TopNewsArticle>> = runCatching {
@@ -19,11 +19,11 @@ class MapListPager {
     }
 
 
-    fun mapList(entityList: List<TopNewsArticle>): Result<List<TopNewsArticle>> = runCatching {
+/*    fun mapList(entityList: List<TopNewsArticle>): Result<List<TopNewsArticle>> = runCatching {
         entityList.map {
             map(it).getOrThrow()
         }
-    }
+    }*/
 
     fun mapResults(entities: List<TopNewsArticle>): Result<List<TopNewsArticle>> = runCatching {
 

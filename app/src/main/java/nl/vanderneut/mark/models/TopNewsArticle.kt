@@ -1,15 +1,18 @@
 package nl.vanderneut.mark.models
 
+import com.squareup.moshi.Json
+
+
 data class TopNewsArticle(
-    val id: Int? = null,
-    val feed: Int? = null,
-    val title: String? = null,
-    val summary: String? = null,
-    val publishDate: String? = null,
-    val image: String? = null,
-    val url: String? = null,
-    val related: List<String>? = null,
-    val categories: List<Category>? = null,
-    val isLiked: Boolean? = null
+    @field:Json(name = "Id") val id: Int? = null,
+    @field:Json(name = "Feed") val feed: Int? = null,
+    @field:Json(name = "Title") val title: String? = null,
+    @field:Json(name = "Summary") val summary: String? = null,
+    @field:Json(name = "PublishDate") val publishDate: String? = null,
+    @field:Json(name = "Image") val image: String? = null,
+    @field:Json(name = "Url") val url: String? = null,
+    @field:Json(name = "Related") val related: List<String>? = null,
+    @field:Json(name = "Categories") val categories: List<Category>? = null,
+    @field:Json(name = "IsLiked") val isLiked: Boolean? = null
 )
 

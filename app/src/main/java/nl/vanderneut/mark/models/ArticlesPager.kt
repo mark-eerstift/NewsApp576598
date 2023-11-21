@@ -39,8 +39,8 @@ class ArticlesPager(
     private suspend fun fetch(startKey: Int, loadSize: Int): Result<List<TopNewsArticle>> {
 
 
-        val response = repository.getArticles(startKey)
-
+        val response = repository.getArticles()
+Log.d("debug", response.toString())
         return when {
             response.isSuccessful -> {
 

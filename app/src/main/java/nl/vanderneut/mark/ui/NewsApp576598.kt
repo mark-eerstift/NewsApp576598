@@ -1,5 +1,6 @@
 package nl.vanderneut.mark.ui
 
+import android.util.Log
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -57,8 +58,9 @@ fun Navigation(
 ) {
     val loading by viewModel.isLoading.collectAsState()
     val error by viewModel.isError.collectAsState()
+    Log.d("mainAct", "Getting Articles")
     val articles = viewModel.newsResponse.collectAsLazyPagingItems()
-
+    Log.d("mainAct", "Got Articles")
 
     //articles.addAll(topArticles ?: listOf())
     NavHost(

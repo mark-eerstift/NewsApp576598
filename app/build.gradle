@@ -4,6 +4,7 @@ plugins {
     id 'com.google.gms.google-services'  // Google Play services Gradle plugin
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id 'org.jetbrains.kotlin.plugin.serialization'
 }
 
 android {
@@ -55,7 +56,7 @@ dependencies {
     //firebase auth and firestore
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.google.firebase:firebase-firestore-ktx'
-
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.1'
     //Dagger - Hilt
     implementation 'com.google.dagger:hilt-android:2.48.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3'
