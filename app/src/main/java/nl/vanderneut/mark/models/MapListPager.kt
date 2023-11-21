@@ -4,9 +4,8 @@ class MapListPager {
     fun mapListPager(entity: TopNewsResponse): Result<TopNewsResponse> = runCatching {
         with(entity) {
             TopNewsResponse(
-                articles = mapResults(articles).getOrThrow(),
-                totalResults = totalResults!!,
-                status = status!!
+                results = mapResults(results).getOrThrow(),
+                nextId = nextId!!
             )
         }
     }
@@ -15,7 +14,7 @@ class MapListPager {
     fun tryOut(entity: TopNewsResponse): Result<List<TopNewsArticle>> = runCatching {
         with(entity) {
 
-            mapResults(entity.articles).getOrThrow()
+            mapResults(entity.results).getOrThrow()
         }
     }
 
@@ -33,15 +32,17 @@ class MapListPager {
             with(it) {
 
                 TopNewsArticle(
-                    //  id = id!!,
-                    source = source,
-                    author = author,
+                    id = id!!,
+                    feed = feed,
+
                     title = title,
-                    description = description,
+                    summary = summary,
+                    publishDate = publishDate,
+                    image = image,
                     url = url,
-                    urlToImage = urlToImage,
-                    publishedAt = publishedAt,
-                    content = content
+                    related = related,
+                    categories = categories,
+                    isLiked = isLiked
                 )
             }
         }
@@ -52,15 +53,17 @@ class MapListPager {
     fun map(entity: TopNewsArticle): Result<TopNewsArticle> = runCatching {
         with(entity) {
             TopNewsArticle(
-                id = id,
-                source = source,
-                author = author,
+                id = id!!,
+                feed = feed,
+
                 title = title,
-                description = description,
+                summary = summary,
+                publishDate = publishDate,
+                image = image,
                 url = url,
-                urlToImage = urlToImage,
-                publishedAt = publishedAt,
-                content = content!!
+                related = related,
+                categories = categories,
+                isLiked = isLiked
             )
         }
     }
