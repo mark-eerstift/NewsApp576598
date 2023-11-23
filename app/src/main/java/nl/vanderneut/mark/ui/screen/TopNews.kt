@@ -16,14 +16,14 @@ import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.paging.LoadState
@@ -36,7 +36,7 @@ import nl.vanderneut.mark.R
 import nl.vanderneut.mark.Screens
 import nl.vanderneut.mark.components.ErrorUI
 import nl.vanderneut.mark.components.LoadingUI
-import nl.vanderneut.mark.models.TopNewsArticle
+import nl.vanderneut.mark.models.NewsItem
 import nl.vanderneut.mark.ui.MainViewModel
 
 private fun ArticleState(state: LoadState, modifier: Modifier = Modifier) {
@@ -52,11 +52,13 @@ private fun ArticleState(state: LoadState, modifier: Modifier = Modifier) {
 
 @Composable
 fun TopNews(
-
-    navController: NavController, articles: LazyPagingItems<TopNewsArticle>,
-    viewModel: MainViewModel, isError: MutableState<Boolean>, isLoading: MutableState<Boolean>
+    navController: NavController,
+    articles: LazyPagingItems<NewsItem>,
+    viewModel: MainViewModel,
 ) {
-    Log.d("topnews.kt", "were here")
+    val loadingState by viewModel.isLoading.collectAsState()
+    val errorState by viewModel.isError.collectAsState()
+
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         Row {
             Text(stringResource(R.string.HomeSignedIn) + FirebaseAuth.getInstance().currentUser?.email)
@@ -66,7 +68,6 @@ fun TopNews(
                 }
             }) {
                 Text(stringResource(R.string.SignOutButton))
-
             }
             Button(onClick = { articles.refresh() }) {
                 Text(text = stringResource(R.string.refrsh))
@@ -74,50 +75,41 @@ fun TopNews(
         }
 
         val state = articles.loadState
-        Log.d("topnews.kt", "loadstate is set")
+
         when {
-            isLoading.value -> {
+            loadingState -> {
                 LoadingUI()
-                Log.d("topnews.kt", "loadibng now")
+                Log.d("topnews.kt", "loading now")
             }
-            isError.value -> {
+            errorState -> {
                 ErrorUI()
-                Log.d("topnews.kt", "errorui")
+                Log.d("topnews.kt", "error ui")
             }
             else -> {
-
-
                 LazyColumn {
-
-                    Log.d("topnews.kt", "lazycol")
                     item { ArticleState(state.prepend) }
-                    Log.d("topnews.kt", "items")
                     items(articles.itemCount) { index ->
                         articles[index]?.let {
                             TopNewsItem(
                                 it,
-                                onNewsClick = { navController.navigate("Detail/$index") })
+                                onNewsClick = { navController.navigate("Detail/$index") }
+                            )
                         }
                     }
-
                     item { ArticleState(state.append) }
                 }
 
                 ArticleState(state.refresh)
-
             }
-
-
         }
     }
-
-
 }
+
 
 
 @Composable
 fun TopNewsItem(
-    article: TopNewsArticle,
+    article: NewsItem,
     modifier: Modifier = Modifier
         .padding(8.dp)
         .clickable {
@@ -128,7 +120,7 @@ fun TopNewsItem(
     Card(modifier, border = BorderStroke(2.dp, color = colorResource(id = R.color.purple_500))) {
         Row(modifier.fillMaxWidth()) {
             SubcomposeAsyncImage(
-                model = article.image,
+                model = article.Image,
                 modifier = Modifier.size(100.dp),
 
                 contentDescription = "",
@@ -149,7 +141,7 @@ fun TopNewsItem(
             }
             Column(modifier) {
                 Text(
-                    text = article.title ?: stringResource(R.string.titlenotavail),
+                    text = article.Title ?: stringResource(R.string.titlenotavail),
                     fontWeight = FontWeight.Bold
                 )
                 /*Row {
@@ -161,15 +153,15 @@ fun TopNewsItem(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun TopNewsPreview() {
-    TopNewsItem(
-        TopNewsArticle(
-            //author = "Namita Singh",
-            title = "Cleo Smith news — live: Kidnap suspect 'in hospital again' as 'hard police grind' credited for breakthrough - The Independent",
-            summary = "The suspected kidnapper of four-year-old Cleo Smith has been treated in hospital for a second time amid reports he was “attacked” while in custody.",
-            publishDate = "2021-11-04T04:42:40Z"
-        )
-    )
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun TopNewsPreview() {
+//    TopNewsItem(
+//        NewsItem(
+//            //author = "Namita Singh",
+//            Title = "Cleo Smith news — live: Kidnap suspect 'in hospital again' as 'hard police grind' credited for breakthrough - The Independent",
+//            Summary = "The suspected kidnapper of four-year-old Cleo Smith has been treated in hospital for a second time amid reports he was “attacked” while in custody.",
+//            PublishDate = "2021-11-04T04:42:40Z"
+//        )
+//    )
+//}

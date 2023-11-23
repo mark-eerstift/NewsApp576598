@@ -26,4 +26,5 @@
     <string name="titlenotavail">Not Available</string>
     <string name="authornotavail">Not Available</string>
     <string name="refrsh">Refresh</string>
+    <string name="default_error_message">error\n</string>
 </resources>

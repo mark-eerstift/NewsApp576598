@@ -27,6 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -40,8 +41,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import nl.vanderneut.mark.R
 import nl.vanderneut.mark.Screens
+import nl.vanderneut.mark.SharedPreferencesHelper
+import nl.vanderneut.mark.api.Repository
 import nl.vanderneut.mark.components.EmailInput
-import nl.vanderneut.mark.components.ErrorUI
+import nl.vanderneut.mark.components.LoginErrorUI
 import nl.vanderneut.mark.components.PasswordInput
 
 
@@ -49,36 +52,49 @@ import nl.vanderneut.mark.components.PasswordInput
 @Composable
 fun LoginScreen(
     navController: NavController,
-    viewModel: LoginScreenViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    repository: Repository, // Injected Repository
+    sharedPreferencesHelper: SharedPreferencesHelper,
+    viewModel: LoginScreenViewModel = remember {
+        LoginScreenViewModel(repository = repository, sharedPreferencesHelper = sharedPreferencesHelper)
+    }
 ) {
     val showLoginForm = rememberSaveable { mutableStateOf(true) }
+    val isLoading by viewModel.loading.collectAsState()
     val isError by viewModel.isError.collectAsState()
-    Log.d("login", "here")
 
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-
-
             when {
+                isLoading -> {
+                    // Show a loading indicator
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .size(50.dp)
+                            .padding(16.dp)
+                    )
+                }
                 isError -> {
-                    Log.d("login", "iserrorui")
-                    ErrorUI()
+                    // Show an error message
+                    LoginErrorUI(
+                        onDismiss = {
+                            viewModel.clearError()
+                        },
+                        errorMessage = stringResource(R.string.default_error_message)
+                    )
                 }
                 else -> {
-                    if (showLoginForm.value) UserForm(
-                        loading = false,
-                        isCreateAccount = false
-
-                    ) { email, password ->
-                        viewModel.signInWithEmailAndPassword(email, password) {
-                            navController.navigate(Screens.TopNews.name)
-                            Log.d("login", "nav to topnews.name")
+                    // Show the login form or registration form based on showLoginForm.value
+                    if (showLoginForm.value) {
+                        UserForm(loading = false, isCreateAccount = false) { email, password ->
+                            viewModel.signInWithEmailAndPassword(email, password) {
+                                navController.navigate(Screens.TopNews.name)
+                                Log.d("login", "nav to topnews.name")
+                            }
                         }
-                    }
-                    else {
+                    } else {
                         UserForm(loading = false, isCreateAccount = true) { email, password ->
                             viewModel.createUserWithEmailAndPassword(email, password) {
                                 navController.navigate(Screens.TopNews.name)
@@ -88,9 +104,8 @@ fun LoginScreen(
                     }
                 }
             }
-
-
         }
+
         Spacer(modifier = Modifier.height(15.dp))
         Row(
             modifier = Modifier.padding(15.dp),
@@ -101,20 +116,18 @@ fun LoginScreen(
                 R.string.Login
             )
             Text(text = stringResource(R.string.NewUser))
-            Text(text,
+            Text(
+                text,
                 modifier = Modifier
                     .clickable {
                         showLoginForm.value = !showLoginForm.value
-
                     }
                     .padding(start = 5.dp),
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colors.secondaryVariant)
-
+                color = MaterialTheme.colors.secondaryVariant
+            )
         }
-
     }
-
 }
 
 @ExperimentalComposeUiApi
@@ -132,22 +145,23 @@ fun UserForm(
     val keyboardController = LocalSoftwareKeyboardController.current
     val valid = remember(email.value, password.value) {
         email.value.trim().isNotEmpty() && password.value.trim().isNotEmpty()
-
     }
-    val modifier = Modifier
-        .height(250.dp)
-        .background(MaterialTheme.colors.background)
-        .verticalScroll(rememberScrollState())
 
+    // Use remember for isError
+    var isError by remember { mutableStateOf(false) }
 
     Column(
-        modifier,
+        modifier = Modifier
+            .height(250.dp)
+            .background(MaterialTheme.colors.background)
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (isCreateAccount) Text(text = stringResource(R.string.RegisterAcc))
 
         EmailInput(
-            emailState = email, enabled = !loading,
+            emailState = email,
+            enabled = !loading,
             onAction = KeyboardActions {
                 passwordFocusRequest.requestFocus()
             },
@@ -168,15 +182,36 @@ fun UserForm(
             loading = loading,
             validInputs = valid
         ) {
+            // Reset error state
+            isError = false
+
+            // Perform action
             onDone(email.value.trim(), password.value.trim())
             keyboardController?.hide()
         }
 
+        // Display loading indicator
+        if (loading) {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .size(50.dp)
+                    .padding(16.dp)
+            )
+        }
 
+        // Display error UI if there is an error
+        if (isError) {
+            LoginErrorUI(
+                errorMessage = stringResource(R.string.default_error_message),
+                onDismiss = {
+                    // Clear error state
+                    isError = false
+                }
+            )
+        }
     }
-
-
 }
+
 
 @Composable
 fun SubmitButton(
@@ -195,9 +230,7 @@ fun SubmitButton(
     ) {
         if (loading) CircularProgressIndicator(modifier = Modifier.size(25.dp))
         else Text(text = textId, modifier = Modifier.padding(5.dp))
-
     }
-
 }
 
 

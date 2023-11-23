@@ -1,5 +1,6 @@
 package nl.vanderneut.mark.ui
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.PaddingValues
@@ -9,6 +10,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -16,25 +18,29 @@ import androidx.navigation.compose.rememberNavController
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import nl.vanderneut.mark.Screens
+import nl.vanderneut.mark.SharedPreferencesHelper
+import nl.vanderneut.mark.api.Repository
 import nl.vanderneut.mark.components.BottomMenu
-import nl.vanderneut.mark.models.TopNewsArticle
+import nl.vanderneut.mark.models.NewsItem
 import nl.vanderneut.mark.ui.screen.*
 
 @Composable
 fun NewsApp576598(mainViewModel: MainViewModel) {
     val scrollState = rememberScrollState()
-
     val navController = rememberNavController()
-    MainScreen(navController = navController, scrollState, mainViewModel)
+    // Access the Repository instance from the MainViewModel
+    val repository = mainViewModel.repository
 
+    // Pass the Repository to the MainScreen composable
+    MainScreen(navController = navController, scrollState, mainViewModel, repository)
 }
-
 
 @Composable
 fun MainScreen(
     navController: NavHostController,
     scrollState: ScrollState,
-    mainViewModel: MainViewModel
+    mainViewModel: MainViewModel,
+    repository: Repository
 ) {
     Scaffold(bottomBar = {
         BottomMenu(navController = navController)
@@ -43,7 +49,8 @@ fun MainScreen(
             navController = navController,
             scrollState = scrollState,
             paddingValues = it,
-            viewModel = mainViewModel
+            viewModel = mainViewModel,
+            repository = repository
         )
     }
 }
@@ -54,36 +61,36 @@ fun Navigation(
     navController: NavHostController,
     scrollState: ScrollState,
     paddingValues: PaddingValues,
-    viewModel: MainViewModel
-) {
+    viewModel: MainViewModel,
+    repository: Repository
+){
     val loading by viewModel.isLoading.collectAsState()
     val error by viewModel.isError.collectAsState()
+    val applicationContext = LocalContext.current
+    val sharedPreferencesHelper = SharedPreferencesHelper(applicationContext)
+
+
     Log.d("mainAct", "Getting Articles")
     val articles = viewModel.newsResponse.collectAsLazyPagingItems()
     Log.d("mainAct", "Got Articles")
 
-    //articles.addAll(topArticles ?: listOf())
     NavHost(
         navController = navController,
         startDestination = Screens.SplashScreen.name,
         modifier = Modifier.padding(paddingValues)
     ) {
-        val isLoading = mutableStateOf(loading)
-        val isError = mutableStateOf(error)
         composable(Screens.SplashScreen.name) {
             SplashScreen(navController = navController)
         }
 
         composable(Screens.LoginScreen.name) {
-            LoginScreen(navController = navController)
+            LoginScreen(navController = navController, repository = repository, sharedPreferencesHelper = sharedPreferencesHelper)
         }
 
         bottomNavigation(
             navController = navController,
-            articles,
-            viewModel = viewModel,
-            isLoading = isLoading,
-            isError = isError
+            articles = articles,
+            viewModel = viewModel
         )
 
         composable("Detail/{index}",
@@ -92,53 +99,47 @@ fun Navigation(
             )) { navBackStackEntry ->
             val index = navBackStackEntry.arguments?.getInt("index")
             index?.let {
-
-
                 val article = articles[index]
                 if (article != null) {
                     DetailScreen(article, scrollState, navController, viewModel)
                 }
             }
         }
+
         composable(Screens.TopNews.name) {
             TopNews(
-                navController = navController, articles,
-                viewModel = viewModel, isLoading = isLoading, isError = isError
+                navController = navController, articles = articles,
+                viewModel = viewModel
             )
         }
 
         composable(Screens.FavoritesScreen.name) {
             FavoritesScreen(
                 navController = navController,
-                viewModel = viewModel, isLoading = isLoading, isError = isError
+                viewModel = viewModel
             )
-
         }
-
-
     }
 }
 
+@SuppressLint("StateFlowValueCalledInComposition")
 fun NavGraphBuilder.bottomNavigation(
-    navController: NavController, articles: LazyPagingItems<TopNewsArticle>,
-    viewModel: MainViewModel, isLoading: MutableState<Boolean>, isError: MutableState<Boolean>
+    navController: NavController,
+    articles: LazyPagingItems<NewsItem>,
+    viewModel: MainViewModel
 ) {
     composable(Screens.TopNews.name) {
-
         TopNews(
-            navController = navController, articles,
-            viewModel = viewModel, isLoading = isLoading, isError = isError
+            navController = navController,
+            articles = articles,
+            viewModel = viewModel
         )
-
     }
 
     composable(Screens.FavoritesScreen.name) {
         FavoritesScreen(
             navController = navController,
-            viewModel = viewModel, isLoading = isLoading, isError = isError
+            viewModel = viewModel
         )
-
     }
-
-
 }

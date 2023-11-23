@@ -30,7 +30,7 @@ import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import nl.vanderneut.mark.R
-import nl.vanderneut.mark.models.TopNewsArticle
+import nl.vanderneut.mark.models.NewsItem
 import nl.vanderneut.mark.ui.MainViewModel
 
 
@@ -38,7 +38,7 @@ import nl.vanderneut.mark.ui.MainViewModel
 //TODO: fix this suppressed error,
 @Composable
 fun DetailScreen(
-    article: TopNewsArticle,
+    article: NewsItem,
     scrollState: ScrollState,
     navController: NavController,
     mainViewModel: MainViewModel
@@ -72,7 +72,7 @@ fun DetailScreen(
                 FavoriteButton(article, mainViewModel)
 
                 SubcomposeAsyncImage(
-                    model = article.image,
+                    model = article.Image,
                     contentScale = ContentScale.FillBounds,
 
                     contentDescription = stringResource(R.string.articleImageAlt),
@@ -105,22 +105,22 @@ fun DetailScreen(
                     )*/
                     InfoWithIcon(
                         icon = Icons.Default.DateRange,
-                        info = article.publishDate ?: stringResource(
+                        info = article.PublishDate ?: stringResource(
                             R.string.DetailDateNotAvail
                         )
                     )
                 }
                 Text(
-                    text = article.title ?: stringResource(R.string.detailTitleNotAvail),
+                    text = article.Title ?: stringResource(R.string.detailTitleNotAvail),
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = article.summary ?: stringResource(R.string.detailDescNotAvail),
+                    text = article.Summary ?: stringResource(R.string.detailDescNotAvail),
                     modifier = Modifier.padding(top = 16.dp)
                 )
                 Text(
-                    modifier = Modifier.clickable { article.url?.let { it1 -> uriHandler.openUri(uri = it1) } },
-                    text = article.url.toString()
+                    modifier = Modifier.clickable { article.Url?.let { it1 -> uriHandler.openUri(uri = it1) } },
+                    text = article.Url.toString()
                 )
             }
         }
@@ -162,7 +162,7 @@ fun InfoWithIcon(icon: ImageVector, info: String) {
 
 @Composable
 fun FavoriteButton(
-    article: TopNewsArticle,
+    article: NewsItem,
     mainViewModel: MainViewModel,
     modifier: Modifier = Modifier,
     color: Color = Color(0xffE91E63)
