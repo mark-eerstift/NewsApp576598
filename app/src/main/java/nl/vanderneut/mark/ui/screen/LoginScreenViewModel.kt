@@ -12,7 +12,10 @@ import nl.vanderneut.mark.api.Repository
 import nl.vanderneut.mark.models.AuthTokenResponse
 import nl.vanderneut.mark.models.RegisterResponse
 
-class LoginScreenViewModel(private val repository: Repository, private val sharedPreferencesHelper: SharedPreferencesHelper) : ViewModel() {
+class LoginScreenViewModel(
+    private val repository: Repository,
+    private val sharedPreferencesHelper: SharedPreferencesHelper
+) : ViewModel() {
 
     private val _loading = MutableStateFlow(false)
 
@@ -65,11 +68,10 @@ class LoginScreenViewModel(private val repository: Repository, private val share
         _isError.value = false
     }
 
-    fun createUserWithEmailAndPassword(username: String, password: String, home: () -> Unit) =
+    fun createUserWithEmailAndPassword(username: String, password: String, navigateToLogin: () -> Unit) =
         viewModelScope.launch(errorHandler) {
             _loading.value = true
 
-            // Make the API call to register
             try {
                 Log.d("LoginScreenViewModel", "Attempting registration for username: $username")
                 val response = repository.register(username, password)
@@ -82,7 +84,8 @@ class LoginScreenViewModel(private val repository: Repository, private val share
                         Log.d("LoginScreenViewModel", "Registration successful: ${responseBody.success}")
                         if (responseBody.success) {
                             // Registration successful
-                            home()
+                            // Now, try to log in
+
                         } else {
                             // Registration failed, handle the message
                             Log.e("LoginScreenViewModel", "Registration failed: ${responseBody.message}")
@@ -107,3 +110,4 @@ class LoginScreenViewModel(private val repository: Repository, private val share
             }
         }
 }
+
