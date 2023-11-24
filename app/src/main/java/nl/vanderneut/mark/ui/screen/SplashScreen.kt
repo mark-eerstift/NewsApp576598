@@ -12,9 +12,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -25,17 +25,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.delay
 import nl.vanderneut.mark.R
 import nl.vanderneut.mark.Screens
+import nl.vanderneut.mark.SharedPreferencesHelper
 
 @Composable
-fun SplashScreen(navController: NavController) {
+fun SplashScreen(navController: NavController, sharedPreferencesHelper: SharedPreferencesHelper) {
 
     val scale = remember {
         Animatable(0f)
     }
+
     LaunchedEffect(key1 = true) {
         scale.animateTo(
             targetValue = 0.9f,
@@ -47,18 +48,13 @@ fun SplashScreen(navController: NavController) {
         )
         delay(250)
 
-        if (FirebaseAuth.getInstance().currentUser?.email.isNullOrEmpty()) {
-            Log.d("splash", "nosignedin")
+        if (sharedPreferencesHelper.getAuthToken() == null) {
+            Log.d("splash", "not signed in")
             navController.navigate(Screens.LoginScreen.name)
-
         } else {
-
-            Log.d("splash", "signedin")
+            Log.d("splash", "signed in")
             navController.navigate(Screens.TopNews.name)
-
         }
-
-
     }
 
     Surface(
@@ -78,18 +74,12 @@ fun SplashScreen(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-
             Spacer(modifier = Modifier.height(15.dp))
             Text(
                 text = stringResource(R.string.SplashText),
-                style = MaterialTheme.typography.h5,
+                style = MaterialTheme.typography.bodyLarge,
                 color = Color.LightGray
             )
-
-
         }
-
-
     }
-
 }

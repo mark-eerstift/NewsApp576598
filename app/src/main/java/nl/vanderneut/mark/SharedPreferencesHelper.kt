@@ -8,17 +8,23 @@ class SharedPreferencesHelper(context: Context) {
     private val sharedPreferences =
         context.getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
 
-    companion object {
-        private const val AUTH_TOKEN_KEY = "authToken"
+    fun getAuthToken(): String? {
+        return sharedPreferences.getString("authToken", null)
     }
 
-    fun saveAuthToken(authToken: String) {
+    fun setAuthToken(authToken: String?) {
         sharedPreferences.edit {
-            putString(AUTH_TOKEN_KEY, authToken)
+            putString("authToken", authToken)
         }
     }
 
-    fun getAuthToken(): String? {
-        return sharedPreferences.getString(AUTH_TOKEN_KEY, null)
+    fun isLoggedIn(): Boolean {
+        return getAuthToken() != null
+    }
+
+    fun clearAuthToken() {
+        sharedPreferences.edit {
+            remove("authToken")
+        }
     }
 }

@@ -6,7 +6,7 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material.Scaffold
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -80,7 +80,7 @@ fun Navigation(
         modifier = Modifier.padding(paddingValues)
     ) {
         composable(Screens.SplashScreen.name) {
-            SplashScreen(navController = navController)
+            SplashScreen(navController = navController, sharedPreferencesHelper = sharedPreferencesHelper)
         }
 
         composable(Screens.LoginScreen.name) {
@@ -90,7 +90,8 @@ fun Navigation(
         bottomNavigation(
             navController = navController,
             articles = articles,
-            viewModel = viewModel
+            viewModel = viewModel,
+            sharedPreferencesHelper
         )
 
         composable("Detail/{index}",
@@ -109,7 +110,7 @@ fun Navigation(
         composable(Screens.TopNews.name) {
             TopNews(
                 navController = navController, articles = articles,
-                viewModel = viewModel
+                viewModel = viewModel, sharedPreferencesHelper = sharedPreferencesHelper
             )
         }
 
@@ -126,13 +127,15 @@ fun Navigation(
 fun NavGraphBuilder.bottomNavigation(
     navController: NavController,
     articles: LazyPagingItems<NewsItem>,
-    viewModel: MainViewModel
+    viewModel: MainViewModel,
+    sharedPreferencesHelper: SharedPreferencesHelper
 ) {
     composable(Screens.TopNews.name) {
         TopNews(
             navController = navController,
             articles = articles,
-            viewModel = viewModel
+            viewModel = viewModel,
+            sharedPreferencesHelper
         )
     }
 

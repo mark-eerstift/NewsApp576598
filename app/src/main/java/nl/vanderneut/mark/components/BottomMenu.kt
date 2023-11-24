@@ -1,12 +1,12 @@
 package nl.vanderneut.mark.components
 
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -21,16 +21,14 @@ fun BottomMenu(navController: NavController) {
         BottomMenuScreen.TopNews,
         BottomMenuScreen.Favorites
     )
-    BottomNavigation(contentColor = colorResource(id = R.color.white))
+    NavigationBar(contentColor = colorResource(id = R.color.white))
     {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
         menuItems.forEach {
-            BottomNavigationItem(
+            NavigationBarItem(
                 label = { Text(text = it.title) },
                 alwaysShowLabel = true,
-                selectedContentColor = Color.White,
-                unselectedContentColor = Color.Gray,
                 selected = currentRoute == it.route,
                 onClick = {
                     navController.navigate(it.route) {

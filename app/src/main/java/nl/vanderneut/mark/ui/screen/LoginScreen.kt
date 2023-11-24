@@ -1,6 +1,6 @@
 package nl.vanderneut.mark.ui.screen
 
-import android.util.Log
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,12 +16,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,62 +46,100 @@ import nl.vanderneut.mark.api.Repository
 import nl.vanderneut.mark.components.EmailInput
 import nl.vanderneut.mark.components.LoginErrorUI
 import nl.vanderneut.mark.components.PasswordInput
+import nl.vanderneut.mark.components.PopupMessage
 
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @ExperimentalComposeUiApi
 @Composable
 fun LoginScreen(
     navController: NavController,
-    repository: Repository, // Injected Repository
+    repository: Repository,
     sharedPreferencesHelper: SharedPreferencesHelper,
     viewModel: LoginScreenViewModel = remember {
         LoginScreenViewModel(repository = repository, sharedPreferencesHelper = sharedPreferencesHelper)
     }
 ) {
-    val showLoginForm = rememberSaveable { mutableStateOf(true) }
+    var showPopup by remember { mutableStateOf(false) }
+    var popupMessage by remember { mutableStateOf("") }
     val isLoading by viewModel.loading.collectAsState()
-    val isError by viewModel.isError.collectAsState()
+    val errorState by viewModel.isError.collectAsState()
+    var showLoginForm by remember { mutableStateOf(true) }
 
-    Surface(modifier = Modifier.fillMaxSize()) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
-        ) {
-            when {
-                isLoading -> {
-                    // Show a loading indicator
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .size(50.dp)
-                            .padding(16.dp)
-                    )
-                }
-                isError -> {
-                    // Show an error message
-                    LoginErrorUI(
-                        onDismiss = {
-                            viewModel.clearError()
-                        },
-                        errorMessage = stringResource(R.string.default_error_message)
-                    )
-                }
-                else -> {
-                    // Show the login form or registration form based on showLoginForm.value
-                    if (showLoginForm.value) {
-                        UserForm(loading = false, isCreateAccount = false) { email, password ->
-                            viewModel.signInWithEmailAndPassword(email, password) {
+    // Define email and password here
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+
+    // Check if the user is already signed in using SharedPreferencesHelper
+    val isUserSignedIn = sharedPreferencesHelper.isLoggedIn()
+
+    // In LaunchedEffect, set showPopup and popupMessage based on conditions
+    LaunchedEffect(viewModel.registrationSuccessful.value, viewModel.isError.value) {
+        if (viewModel.registrationSuccessful.value) {
+            viewModel.clearRegistrationSuccess()
+            showPopup = true
+            popupMessage = "Registration successful!"
+        } else if (viewModel.isError.value) {
+            viewModel.clearError()
+            showPopup = true
+            popupMessage = "Registration failed. Please try again."
+        }
+    }
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
+    ) {
+        when {
+            isLoading -> {
+                // Show a loading indicator
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .size(50.dp)
+                        .padding(16.dp)
+                )
+            }
+            showPopup -> {
+                // Show the pop-up message
+                PopupMessage(
+                    message = popupMessage,
+                    onDismiss = { showPopup = false }
+                )
+            }
+            isUserSignedIn -> {
+                // Redirect to TopNews if the user is already signed in
+                navController.navigate(Screens.TopNews.name)
+            }
+            else -> {
+                // Show the login form or registration form based on showLoginForm.value
+                if (showLoginForm) {
+                    UserForm(
+                        loading = false,
+                        isCreateAccount = false,
+                        onDone = { userEmail, userPassword ->
+                            email = userEmail
+                            password = userPassword
+                            viewModel.handleLoginOrRegister(email, password, true) {
                                 navController.navigate(Screens.TopNews.name)
-                                Log.d("login", "nav to topnews.name")
                             }
                         }
-                    } else {
-                        UserForm(loading = false, isCreateAccount = true) { email, password ->
-                            viewModel.createUserWithEmailAndPassword(email, password) {
-                                navController.navigate(Screens.TopNews.name)
-                                Log.d("login", "also nav to topnews,ame")
+                    )
+                } else {
+                    UserForm(
+                        loading = false,
+                        isCreateAccount = true,
+                        onDone = { userEmail, userPassword ->
+                            email = userEmail
+                            password = userPassword
+                            viewModel.handleLoginOrRegister(email, password, false){
+                                navController.navigate(Screens.LoginScreen.name)
                             }
+
                         }
-                    }
+                    )
+                    // Registration form
+                    // Note: Since we handled registration in LaunchedEffect, no need to do anything here
                 }
             }
         }
@@ -112,23 +150,24 @@ fun LoginScreen(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            val text = if (showLoginForm.value) stringResource(R.string.signUp) else stringResource(
-                R.string.Login
-            )
+            val text = if (showLoginForm) stringResource(R.string.signUp) else stringResource(R.string.Login)
             Text(text = stringResource(R.string.NewUser))
             Text(
                 text,
                 modifier = Modifier
                     .clickable {
-                        showLoginForm.value = !showLoginForm.value
+                        showLoginForm = !showLoginForm
                     }
                     .padding(start = 5.dp),
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colors.secondaryVariant
+                color = MaterialTheme.colorScheme.secondary
             )
         }
     }
 }
+
+
+
 
 @ExperimentalComposeUiApi
 @Preview
@@ -153,7 +192,7 @@ fun UserForm(
     Column(
         modifier = Modifier
             .height(250.dp)
-            .background(MaterialTheme.colors.background)
+            .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

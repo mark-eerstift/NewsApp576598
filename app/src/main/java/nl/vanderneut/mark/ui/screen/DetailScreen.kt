@@ -1,9 +1,6 @@
 package nl.vanderneut.mark.ui.screen
 
 import android.annotation.SuppressLint
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
@@ -12,6 +9,15 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconToggleButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,7 +40,7 @@ import nl.vanderneut.mark.models.NewsItem
 import nl.vanderneut.mark.ui.MainViewModel
 
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnusedMaterial3ScaffoldPaddingParameter")
 //TODO: fix this suppressed error,
 @Composable
 fun DetailScreen(
@@ -44,89 +50,77 @@ fun DetailScreen(
     mainViewModel: MainViewModel
 ) {
     val uriHandler = LocalUriHandler.current
-    var visible by remember { mutableStateOf(false) }
 
-    Scaffold(topBar = {
-        DetailTopAppBar(onBackPressed = { navController.popBackStack() })
-    }) {
-
-        AnimatedVisibility(
-            visible = true,
-            enter = slideInVertically(
-                // Enters by sliding down from offset -fullHeight to 0.
-                initialOffsetY = { fullHeight -> -fullHeight }
-            ),
-            exit = slideOutVertically(
-                // Exits by sliding up from offset 0 to -fullHeight.
-                targetOffsetY = { fullHeight -> -fullHeight }
-            )
-        )
-        {
+    Scaffold(
+        topBar = { DetailTopAppBar(onBackPressed = { navController.popBackStack() }) },
+        content = {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .verticalScroll(scrollState)
                     .padding(16.dp)
-                    .verticalScroll(scrollState),
-                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                FavoriteButton(article, mainViewModel)
+
+
+                Text("Before FavoriteButton") // Add this line
+                FavoriteButton(article, mainViewModel, Modifier.align(Alignment.End))
+                Text("After FavoriteButton") // Add this line
+
+
+                Spacer(modifier = Modifier.height(16.dp))
 
                 SubcomposeAsyncImage(
                     model = article.Image,
                     contentScale = ContentScale.FillBounds,
-
                     contentDescription = stringResource(R.string.articleImageAlt),
-
-                    ) {
-
+                ) {
                     val state = painter.state
                     if (state is AsyncImagePainter.State.Loading) {
                         CircularProgressIndicator()
-
                     } else if (state is AsyncImagePainter.State.Error || state is AsyncImagePainter.State.Empty) {
                         Image(
                             painterResource(R.drawable.errorimg),
                             stringResource(R.string.imgErrorAlt)
                         )
-
                     } else {
-
                         SubcomposeAsyncImageContent()
                     }
                 }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp), horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    /*InfoWithIcon(
-                        Icons.Default.Edit,
-                        info = article.feed ?: stringResource(R.string.AuthorNull)
-                    )*/
-                    InfoWithIcon(
-                        icon = Icons.Default.DateRange,
-                        info = article.PublishDate ?: stringResource(
-                            R.string.DetailDateNotAvail
-                        )
-                    )
-                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                InfoWithIcon(
+                    icon = Icons.Default.DateRange,
+                    info = article.PublishDate ?: stringResource(R.string.DetailDateNotAvail)
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
                 Text(
                     text = article.Title ?: stringResource(R.string.detailTitleNotAvail),
                     fontWeight = FontWeight.Bold
                 )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
                 Text(
                     text = article.Summary ?: stringResource(R.string.detailDescNotAvail),
-                    modifier = Modifier.padding(top = 16.dp)
                 )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
                 Text(
-                    modifier = Modifier.clickable { article.Url?.let { it1 -> uriHandler.openUri(uri = it1) } },
+                    modifier = Modifier.clickable {
+                        article.Url?.let { uriHandler.openUri(uri = it) }
+                    },
                     text = article.Url.toString()
                 )
             }
         }
-    }
+    )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailTopAppBar(onBackPressed: () -> Unit = {}) {
     TopAppBar(title = {
@@ -169,32 +163,34 @@ fun FavoriteButton(
 ) {
     var isFavorite = mainViewModel.favoriteArticles.contains(article)
 
-    IconToggleButton(
-        checked = isFavorite,
-        onCheckedChange = {
-            isFavorite = !isFavorite
-            if (isFavorite) {
-                mainViewModel.addFav(article)
-            } else {
-                mainViewModel.remove(article)
-            }
-        }
-
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.End
     ) {
-        Icon(
-            tint = color,
-            modifier = modifier.graphicsLayer {
-                scaleX = 1.3f
-                scaleY = 1.3f
+        IconToggleButton(
+            checked = isFavorite,
+            onCheckedChange = {
+                isFavorite = !isFavorite
+                if (isFavorite) {
+                    mainViewModel.addFav(article)
+                } else {
+                    mainViewModel.remove(article)
+                }
             },
-            imageVector = if (isFavorite) {
-                Icons.Filled.Favorite
-            } else {
-                Icons.Default.FavoriteBorder
-            },
-            contentDescription = null
-        )
+        ) {
+            Icon(
+                tint = color,
+                modifier = Modifier.graphicsLayer {
+                    scaleX = 1.3f
+                    scaleY = 1.3f
+                },
+                imageVector = if (isFavorite) {
+                    Icons.Filled.Favorite
+                } else {
+                    Icons.Outlined.FavoriteBorder
+                },
+                contentDescription = null
+            )
+        }
     }
-
 }
-
